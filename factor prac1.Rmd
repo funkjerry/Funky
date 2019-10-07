@@ -1,0 +1,98 @@
+---
+title: "Untitled"
+author: "Steven"
+date: "2019年10月2日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr);
+library(tidyr); library(showtext)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+```
+
+```{r}
+StuList <- list(
+  次序=c(1,2,3,4,5,6,7,8),
+  學號=c(172,214,322,425,517,833,752,114),
+  姓名=c("小明","大雄","胖虎","小新","大白","阿華","小英","阿美"),
+  性別=c("男","男","男","女","女","男","女","男"),
+  成績=c(80,42,90,82,50,77,30,90)
+  )
+StuList 
+as.data.frame(StuList) -> StuDFfromList
+StuDFfromList
+```
+
+```{r}
+stuList2 <-list(
+  order=c(1,2,3,4,5,6,7,8),
+  id=c(226,227,382,436,123,235,398,323),
+  name=c("Allen","Rex","David","Steven","Ivy","Catherine","Stephanie","Riot")
+)
+```
+
+```{r}
+StuDF <- data.frame(
+  次序=c(1,2,3,4,5,6,7,8),
+  學號=c(172,214,322,425,517,833,752,114),
+  姓名=c("小明","大雄","胖虎","小新","大白","阿華","小英","阿美"),
+  性別=c("男","男","男","女","女","男","女","男"),
+  成績=c(80,42,90,82,50,77,30,90)
+  )
+StuDF 
+length(StuDF) # 從向量角度看
+nrow(StuDF) # 從矩陣角度看
+```
+```{r}
+library(dplyr)
+```
+```{r}
+str(StuDF)
+```
+
+```{r}
+set.seed(124)
+schtyp <- sample(0:1, 20, replace = TRUE)
+schtyp
+```
+
+```{r}
+is.factor(schtyp)
+```
+
+```{r}
+is.numeric(schtyp)
+```
+
+```{r}
+schtyp.f <- factor(schtyp, labels = c("private", "public"))
+schtyp.f
+```
+
+```{r}
+ses <- c("low", "middle", "low", "low", "low", "low", "middle", "low", "middle",
+    "middle", "middle", "middle", "middle", "high", "high", "low", "middle",
+    "middle", "low", "high")
+
+is.factor(ses)
+is.character(ses)
+```
+
+```{r}
+ses.f.bad.order <- factor(ses)
+is.factor(ses.f.bad.order)
+ses.f.bad.order
+```
+```{r}
+levels(ses.f.bad.order)
+```
+
