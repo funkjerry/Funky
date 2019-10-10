@@ -3,26 +3,20 @@ navbar:
   title: "My Website"
   type: inverse
   left:
-    - text: "Home"
+    - text: "競賽說明"
       icon: fa-home
       href: index.html
-    - text: "About"
+    - text: "報名資訊"
       icon: fa-info
       href: about.html
-    - text: "More"
+    - text: "徵詢隊友"
       icon: fa-gear
-      menu:
-        - text: "Heading 1"
-        - text: "Page A"
-          href: page-a.html
-        - text: "Page B"
-          href: page-b.html
-        - text: "---------"
-        - text: "Heading 2"
-        - text: "Page C"
-          href: page-c.html
-        - text: "Page D"
-          href: page-d.html
-  right:
+      href: partner.html
+    - text: "參考作品"
+      href: work.html
+    - text: "臉書粉專"
+      href: https://www.facebook.com/%E8%B3%87%E6%96%99%E7%A7%91%E5%AD%B8%E6%87%89%E7%94%A8%E5%89%B5%E6%96%B0%E9%BB%91%E5%AE%A2%E6%9D%BE%E7%AB%B6%E8%B3%BD-2329576390451183/?__tn__=k*F&tn-str=k*F
+    - text: "歷屆得獎名單"
+      href: winner.html
     - icon: fa-question fa-lg
-      href: https://example.com
+      href: https://www.facebook.com/Emajortaiwanforu/
