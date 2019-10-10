@@ -1,5 +1,4 @@
 name: "Econhackathon"
-output_dir: "."
 navbar:
   title: "My Website"
   type: inverse
@@ -21,3 +20,4 @@ navbar:
       href: winner.html
     - icon: fa-question fa-lg
       href: https://www.facebook.com/Emajortaiwanforu/
+output_dir: "."
