@@ -329,6 +329,24 @@ $(document).ready(function () {
 <p>Welcome, World!!! Hello, 這是黑客松</p>
 黑客松是黑客+馬拉松（Hack + Marathon）的組合字，大致上就是幾個人聚在一起以馬拉松的方式進行一段長時間(24小時)的程式設計活動。以軟體、手機應用程式、虛擬實境和雲端服務等技術整合，開發具潛在目標市場包含醫療、環境、教育、娛樂和智慧生活等的資訊科技創新活動。���立臺北大學經濟系今年度首度辦理「第一屆國立臺北大學資料科學應用創新黑客松競賽」活動，期待參賽者能以「技術交流、團隊合作」的精神，在競賽中與實務接軌，發揮無窮的想像力，為新科技帶來不一樣的驚奇！ <br>
 </p>
+<form name="submit-to-google-sheet">
+<input name="email" type="email" placeholder="Email" required>
+<button type="submit">
+Send
+</button>
+</form>
+<script>
+  const scriptURL =
+  '<https://script.google.com/macros/s/AKfycbyY31nBmKW15N9I2AS413dEl25YiqyZBhJf8tmMNf--bI7aE-8/exec>'
+  const form = document.forms['submit-to-google-sheet']
+
+  form.addEventListener('submit', e => {
+    e.preventDefault()
+    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+      .then(response => console.log('Success!', response))
+      .catch(error => console.error('Error!', error.message))
+  })
+</script>
 
 
 
