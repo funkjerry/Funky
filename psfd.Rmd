@@ -1,0 +1,149 @@
+---
+title: "psfd"
+author: "Wang"
+date: "2020/9/25"
+output: html_document
+---
+
+library(foreign)
+library(ggplot2)
+library(devtools)
+library(tidyverse)
+
+wang <- read.spss("D:/satis/RIRR_1.sav")
+wang2 <- as.data.frame(wang)
+wang2$happy <- as.numeric(wang2$happy)
+wang2$life <- as.numeric(wang2$life)
+wang2$health <- as.numeric(wang2$health)
+wang2$Shealth <- as.numeric(wang2$Shealth)
+wang2$work_satis <- as.numeric(wang2$work_satis)
+wang2$family_satis <- as.numeric(wang2$family_satis)
+wang2$eco_satis <- as.numeric(wang2$eco_satis)
+wang2$marry_satis <- as.numeric(wang2$marry_satis)
+
+  
+graph <-list()
+wang2 %>%
+  drop_na(happy) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(happy)) %>%
+  summarise(count1=mean(life))->
+  new
+  
+  %>%
+  ggplot(aes(x, size=3))+
+  geom_line(aes(y=count, linetype = "dotted", color="red")+
+  geom_line(aes(y=count1, linetype = "dotted", color="blue")
+  ->graph$happy
+  
+wang2 %>%
+  drop_na(happy) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(happy)) -> d1
+wang2 %>%
+  drop_na(life) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(life)) -> d2
+
+d1 <- data.frame(d1,category=c("H","H","H","H","H"))
+d2 <- data.frame(d2,category=c("L","L","L","L","L"))
+d3 <- rbind(d1,d2)
+labelsx <- c("1953-64","1935-54","1964-76","1977-83","1984-91")
+d3 %>%
+  ggplot(aes(x=scale, y=count, group=category, color=category))+
+  geom_line(linetype="solid", size=2)+
+  geom_point(size=3)+
+  theme(axis.text.x=)
+  scale_x_discrete(labels=labelsx)
+d3 %>%
+  ggplot(aes(x=scale, size=3))+
+  geom_line(aes(y = count), linetype = "dotted", color="blue")+
+  geom_line(aes(y = count.1), linetype = "dotted", color="red")+
+  geom_point(y=count)+
+  geom_point(y=count.1)
+wang2 %>%
+  drop_na(life) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(life)) %>%
+  ggplot(aes(x = scale, y = count, size=3))+
+  geom_line(linetype = "dashed", color="blue")+
+  geom_point()->graph$life
+  
+wang2 %>%
+  drop_na(health) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(health)) %>%
+  ggplot(aes(x = scale, y = count,group=1, size=2))+
+  geom_line(linetype = "dashed", color="red")+
+  geom_point()->graph$health
+
+wang2 %>%
+  drop_na(Shealth) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(Shealth)) %>%
+  ggplot(aes(x = scale, y = count,group=2, size=3))+
+  geom_line(linetype = "dashed", color="blue")+
+  geom_point()->graph$Shealth
+  
+wang2 %>%
+  drop_na(work_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(work_satis)) %>%
+  ggplot(aes(x = scale, y = count,group=1, size=3))+
+  geom_line(linetype = "dashed", color="red")+
+  geom_point()->graph$work_satis
+
+wang2 %>%
+  drop_na(family_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(family_satis)) %>%
+  ggplot(aes(x = scale, y = count,group=2, size=3))+
+  geom_line(linetype = "dashed", color="blue")+
+  geom_point()->graph$family_satis
+  
+wang2 %>%
+  drop_na(eco_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(eco_satis)) %>%
+  ggplot(aes(x = scale, y = count,group=3, size=3))+
+  geom_line(linetype = "dashed", color="green")+
+  geom_point()->graph$eco_satis
+
+wang2 %>%
+  drop_na(marry_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(marry_satis)) %>%
+  ggplot(aes(x = scale, y = count,group=4, size=3))+
+  geom_line(linetype = "dashed", color="yellow")+
+  geom_point()->graph$marry_satis
+  
+graph$happylife <- rbind(graph$happy, graph$life)
+p<-ggplot(graph$happylife, aes(x=wang2$scale, y=count, group=group))+
+  geom_point()
+p
+
+is.na(wang2$happy)
+drop_na(wang2$happy)
+ggplot(data=subset(wang2, !is.na(wang2)), aes(x=scale, y=mean(as.numeric(happy)), group=1)) +
+  geom_line(linetype = "dashed", color="red")+
+  geom_point()
+as.numeric(wang2$life)->life
+mean(life)
+wang2 %>%
+  mean(life!= "NA")
+
+wang2 %>% filter(!is.na(life))
+  
+mean(wang$life)
+mean(as.numeric(wang$life))
+
+employee <- c('Yossi ','Pitt ','Deepak','Golan')
+salary <- c(21000, 23400, 26800,91000)
+testd <- data.frame(employee,salary)
+mean(testd$salary>=25000)
+
+data("iris")
+iris$Sepal.Length[5:10] <- NA # create some NAs for this example
+
+ggplot(data=subset(iris, !is.na(Sepal.Length)), aes(x=Sepal.Length)) + 
+geom_bar(stat="bin")
