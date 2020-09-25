@@ -7,10 +7,11 @@ output: html_document
 
 library(foreign)
 library(ggplot2)
-library(devtools)
 library(tidyverse)
+library(extrafont)
 
-wang <- read.spss("D:/satis/RIRR_1.sav")
+loadfonts("win")
+wang <- read.spss("C:/users/Steve/downloads/RIRR_1.sav")
 wang2 <- as.data.frame(wang)
 wang2$happy <- as.numeric(wang2$happy)
 wang2$life <- as.numeric(wang2$life)
@@ -26,35 +27,35 @@ graph <-list()
 wang2 %>%
   drop_na(happy) %>% 
   group_by(scale) %>%
-  summarise(count=mean(happy)) %>%
-  summarise(count1=mean(life))->
-  new
-  
-  %>%
-  ggplot(aes(x, size=3))+
-  geom_line(aes(y=count, linetype = "dotted", color="red")+
-  geom_line(aes(y=count1, linetype = "dotted", color="blue")
-  ->graph$happy
-  
-wang2 %>%
-  drop_na(happy) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(happy)) -> d1
+  summarise(count=mean(happy))->d1
 wang2 %>%
   drop_na(life) %>% 
   group_by(scale) %>%
-  summarise(count=mean(life)) -> d2
-
+  summarise(count=mean(life))->d2
+d1$count <- round(d1$count, digits=2)
+d2$count <- round(d2$count, digits=2)
 d1 <- data.frame(d1,category=c("H","H","H","H","H"))
 d2 <- data.frame(d2,category=c("L","L","L","L","L"))
 d3 <- rbind(d1,d2)
 labelsx <- c("1953-64","1935-54","1964-76","1977-83","1984-91")
+
 d3 %>%
   ggplot(aes(x=scale, y=count, group=category, color=category))+
   geom_line(linetype="solid", size=2)+
   geom_point(size=3)+
-  theme(axis.text.x=)
-  scale_x_discrete(labels=labelsx)
+  geom_text(aes(label=count,
+    vjust=1.8,hjust=0,alpha=0.8),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_discrete(
+  labels=c("Happy","Life"))+
+  theme(text=element_text(size=10, family="Comic Sans MS"),
+  axis.text.x=element_text(angle=45,vjust=0.5))+
+  ylim(4.60,5.20)+
+  labs(
+    title="主樣本的快樂感和幸福感",
+    x="主樣本出生年度",y="平均分數")
+  
 d3 %>%
   ggplot(aes(x=scale, size=3))+
   geom_line(aes(y = count), linetype = "dotted", color="blue")+
