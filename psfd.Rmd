@@ -102,7 +102,7 @@ d3 %>%
   theme(text=element_text(size=10, family="Comic Sans MS"),
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
-    title="主樣本的快樂感和幸福感",
+    title="主樣本的生活快樂感和生活過得好不好",
     x="主樣本出生年度",y="平均分數")->graph$happylife
 ###d6 
 d6 %>%
@@ -134,7 +134,7 @@ d11 %>%
   theme(text=element_text(size=10, family="Comic Sans MS"),
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
-    title="主樣本的自評滿意度分數",
+    title="主樣本的工作、家庭、經濟、婚姻滿意度分數",
     x="主樣本出生年度",y="平均分數")->graph$satisfaction
     
 save(graph, file="psfdPlot.Rda")
