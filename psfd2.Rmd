@@ -12,7 +12,7 @@ library(extrafont)
 loadfonts("win")
 wang <- read.spss("D:/satis/RIRR_1.sav")
 wang2 <- as.data.frame(wang)
-
+as.numeric(as.character(wang2$birth_y)) ->wang2$birth_y
 wave1930<-(filter(wang2, birth_y>=23, birth_y<=28))
 wave1940<-(filter(wang2, birth_y>=29, birth_y<=38))
 wave1950<-(filter(wang2, birth_y>=39, birth_y<=48))
