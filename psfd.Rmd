@@ -138,3 +138,6 @@ d11 %>%
     x="主樣本出生年度",y="平均分數")->graph$satisfaction
     
 save(graph, file="psfdPlot.Rda")
+```{r}
+bookdown::publish_book()
+```
