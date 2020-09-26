@@ -7,22 +7,12 @@ output: html_document
 
 library(foreign)
 library(ggplot2)
-library(tidyverse)
+library(dplyr)
 library(extrafont)
-font_import()
 loadfonts("win")
 wang <- read.spss("D:/satis/RIRR_1.sav")
 wang2 <- as.data.frame(wang)
-wang2$happy <- as.numeric(wang2$happy)
-wang2$life <- as.numeric(wang2$life)
-wang2$health <- as.numeric(wang2$health)
-wang2$Shealth <- as.numeric(wang2$Shealth)
-wang2$work_satis <- as.numeric(wang2$work_satis)
-wang2$family_satis <- as.numeric(wang2$family_satis)
-wang2$eco_satis <- as.numeric(wang2$eco_satis)
-wang2$marry_satis <- as.numeric(wang2$marry_satis)
 
-  
 graph <-list()
 
 ### happy life
@@ -90,7 +80,7 @@ save(
 ### 作圖 d3
 d3 %>%
   ggplot(aes(x=scale, y=count, group=category, color=category))+
-  geom_line(linetype="solid", size=2)+
+  geom_line(linetype="solid", size=1)+
   geom_point(size=3)+
   geom_text(aes(label=count,
     vjust=1.5,hjust=0,alpha=1.2,
@@ -103,11 +93,12 @@ d3 %>%
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
     title="主樣本的生活快樂感和生活過得好不好",
-    x="主樣本出生年度",y="平均分數")->graph$happylife
+    x="主樣本出生年度",y="平均分數",
+    caption = "(1分最低，7分最高)")->graph$happylife
 ###d6 
 d6 %>%
   ggplot(aes(x=scale, y=count, group=category, color=category))+
-  geom_line(linetype="solid", size=2)+
+  geom_line(linetype="solid", size=1)+
   geom_point(size=3)+
   geom_text(aes(label=count,
     vjust=1.5,hjust=1.2,alpha=1.2,
@@ -120,22 +111,27 @@ d6 %>%
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
     title="主樣本和其伴侶的自評健康分數",
-    x="主樣本出生年度",y="平均分數")->graph$health
+    x="主樣本出生年度",y="平均分數",
+    caption = "(1分最低，5分最高)")->graph$health
 ###d11
 d11 %>%
   ggplot(aes(x=scale, y=count, group=category, color=category))+
-  geom_line(linetype="solid", size=2)+
+  geom_line(linetype="solid", size=1)+
   geom_point(size=3)+
+  geom_text(aes(label=count,
+    vjust=1.6,hjust=1,alpha=1.2,
+    fontface="bold"),
+    show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
-  scale_y_continuous(limits=c(1.8,3.9),
-  breaks = seq(1.8,3.9, by=0.2))+
   scale_color_discrete(
-  labels=c("Work","Family","Eco","Marry"))+
+  labels=c("Eco","Family","Marry","Work"))+
   theme(text=element_text(size=10, family="Comic Sans MS"),
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
-    title="主樣本的工作、家庭、經濟、婚姻滿意度分數",
-    x="主樣本出生年度",y="平均分數")->graph$satisfaction
+  title=
+    "主樣本的工作、家庭、經濟、婚姻滿意度分數",
+      x="主樣本出生年度",y="平均分數",
+        caption="(1分最低，4分最高)")->graph$satisfaction
     
 save(graph, file="psfdPlot.Rda")
 ```{r}
