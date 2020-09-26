@@ -9,9 +9,9 @@ library(foreign)
 library(ggplot2)
 library(tidyverse)
 library(extrafont)
-
+font_import()
 loadfonts("win")
-wang <- read.spss("C:/users/Steve/downloads/RIRR_1.sav")
+wang <- read.spss("D:/satis/RIRR_1.sav")
 wang2 <- as.data.frame(wang)
 wang2$happy <- as.numeric(wang2$happy)
 wang2$life <- as.numeric(wang2$life)
@@ -24,6 +24,8 @@ wang2$marry_satis <- as.numeric(wang2$marry_satis)
 
   
 graph <-list()
+
+### happy life
 wang2 %>%
   drop_na(happy) %>% 
   group_by(scale) %>%
@@ -39,112 +41,100 @@ d2 <- data.frame(d2,category=c("L","L","L","L","L"))
 d3 <- rbind(d1,d2)
 labelsx <- c("1953-64","1935-54","1964-76","1977-83","1984-91")
 
+###health Shealth
+wang2 %>%
+  drop_na(health) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(health))->d4
+wang2 %>%
+  drop_na(Shealth) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(Shealth))->d5
+d4$count <- round(d4$count, digits=2)
+d5$count <- round(d5$count, digits=2)
+d4 <- data.frame(d4,category=c("O","O","O","O","O"))
+d5 <- data.frame(d5,category=c("S","S","S","S","S"))
+d6 <- rbind(d4,d5)
+
+### work family eco marry satis
+wang2 %>%
+  drop_na(work_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(work_satis))->d7
+wang2 %>%
+  drop_na(family_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(family_satis))->d8
+wang2 %>%
+  drop_na(eco_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(eco_satis))->d9
+wang2 %>%
+  drop_na(marry_satis) %>% 
+  group_by(scale) %>%
+  summarise(count=mean(marry_satis))->d10
+d7$count <- round(d7$count, digits=2)
+d8$count <- round(d8$count, digits=2)
+d7 <- data.frame(d7,category=c("W","W","W","W","W"))
+d8 <- data.frame(d8,category=c("F","F","F","F","F"))
+d9$count <- round(d9$count, digits=2)
+d10$count <- round(d10$count, digits=2)
+d9 <- data.frame(d9,category=c("E","E","E","E","E"))
+d10 <- data.frame(d10,category=c("M","M","M","M","M"))
+d11 <- rbind(d7,d8,d9,d10)
+
+save(
+  d3,d6,d11,labelsx,
+  file="psfddata.Rda")
+
+### 作圖 d3
 d3 %>%
   ggplot(aes(x=scale, y=count, group=category, color=category))+
   geom_line(linetype="solid", size=2)+
   geom_point(size=3)+
   geom_text(aes(label=count,
-    vjust=1.8,hjust=0,alpha=0.8),
+    vjust=1.5,hjust=0,alpha=1.2,
+    fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
   scale_color_discrete(
   labels=c("Happy","Life"))+
   theme(text=element_text(size=10, family="Comic Sans MS"),
   axis.text.x=element_text(angle=45,vjust=0.5))+
-  ylim(4.60,5.20)+
   labs(
     title="主樣本的快樂感和幸福感",
-    x="主樣本出生年度",y="平均分數")
-  
-d3 %>%
-  ggplot(aes(x=scale, size=3))+
-  geom_line(aes(y = count), linetype = "dotted", color="blue")+
-  geom_line(aes(y = count.1), linetype = "dotted", color="red")+
-  geom_point(y=count)+
-  geom_point(y=count.1)
-wang2 %>%
-  drop_na(life) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(life)) %>%
-  ggplot(aes(x = scale, y = count, size=3))+
-  geom_line(linetype = "dashed", color="blue")+
-  geom_point()->graph$life
-  
-wang2 %>%
-  drop_na(health) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(health)) %>%
-  ggplot(aes(x = scale, y = count,group=1, size=2))+
-  geom_line(linetype = "dashed", color="red")+
-  geom_point()->graph$health
-
-wang2 %>%
-  drop_na(Shealth) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(Shealth)) %>%
-  ggplot(aes(x = scale, y = count,group=2, size=3))+
-  geom_line(linetype = "dashed", color="blue")+
-  geom_point()->graph$Shealth
-  
-wang2 %>%
-  drop_na(work_satis) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(work_satis)) %>%
-  ggplot(aes(x = scale, y = count,group=1, size=3))+
-  geom_line(linetype = "dashed", color="red")+
-  geom_point()->graph$work_satis
-
-wang2 %>%
-  drop_na(family_satis) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(family_satis)) %>%
-  ggplot(aes(x = scale, y = count,group=2, size=3))+
-  geom_line(linetype = "dashed", color="blue")+
-  geom_point()->graph$family_satis
-  
-wang2 %>%
-  drop_na(eco_satis) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(eco_satis)) %>%
-  ggplot(aes(x = scale, y = count,group=3, size=3))+
-  geom_line(linetype = "dashed", color="green")+
-  geom_point()->graph$eco_satis
-
-wang2 %>%
-  drop_na(marry_satis) %>% 
-  group_by(scale) %>%
-  summarise(count=mean(marry_satis)) %>%
-  ggplot(aes(x = scale, y = count,group=4, size=3))+
-  geom_line(linetype = "dashed", color="yellow")+
-  geom_point()->graph$marry_satis
-  
-graph$happylife <- rbind(graph$happy, graph$life)
-p<-ggplot(graph$happylife, aes(x=wang2$scale, y=count, group=group))+
-  geom_point()
-p
-
-is.na(wang2$happy)
-drop_na(wang2$happy)
-ggplot(data=subset(wang2, !is.na(wang2)), aes(x=scale, y=mean(as.numeric(happy)), group=1)) +
-  geom_line(linetype = "dashed", color="red")+
-  geom_point()
-as.numeric(wang2$life)->life
-mean(life)
-wang2 %>%
-  mean(life!= "NA")
-
-wang2 %>% filter(!is.na(life))
-  
-mean(wang$life)
-mean(as.numeric(wang$life))
-
-employee <- c('Yossi ','Pitt ','Deepak','Golan')
-salary <- c(21000, 23400, 26800,91000)
-testd <- data.frame(employee,salary)
-mean(testd$salary>=25000)
-
-data("iris")
-iris$Sepal.Length[5:10] <- NA # create some NAs for this example
-
-ggplot(data=subset(iris, !is.na(Sepal.Length)), aes(x=Sepal.Length)) + 
-geom_bar(stat="bin")
+    x="主樣本出生年度",y="平均分數")->graph$happylife
+###d6 
+d6 %>%
+  ggplot(aes(x=scale, y=count, group=category, color=category))+
+  geom_line(linetype="solid", size=2)+
+  geom_point(size=3)+
+  geom_text(aes(label=count,
+    vjust=1.5,hjust=1.2,alpha=1.2,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_discrete(
+  labels=c("Health","Shealth"))+
+  theme(text=element_text(size=10, family="Comic Sans MS"),
+  axis.text.x=element_text(angle=45,vjust=0.5))+
+  labs(
+    title="主樣本和其伴侶的自評健康分數",
+    x="主樣本出生年度",y="平均分數")->graph$health
+###d11
+d11 %>%
+  ggplot(aes(x=scale, y=count, group=category, color=category))+
+  geom_line(linetype="solid", size=2)+
+  geom_point(size=3)+
+  scale_x_discrete(labels=labelsx)+
+  scale_y_continuous(limits=c(1.8,3.9),
+  breaks = seq(1.8,3.9, by=0.2))+
+  scale_color_discrete(
+  labels=c("Work","Family","Eco","Marry"))+
+  theme(text=element_text(size=10, family="Comic Sans MS"),
+  axis.text.x=element_text(angle=45,vjust=0.5))+
+  labs(
+    title="主樣本的自評滿意度分數",
+    x="主樣本出生年度",y="平均分數")->graph$satisfaction
+    
+save(graph, file="psfdPlot.Rda")
