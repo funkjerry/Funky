@@ -9,18 +9,133 @@ library(foreign)
 library(ggplot2)
 library(dplyr)
 library(extrafont)
+library(tidyverse)
 loadfonts("win")
-wang <- read.spss("D:/satis/RIRR_1.sav")
-wang2 <- as.data.frame(wang)
+wang <- read.spss("C:/Users/steve/Downloads/satis/RIRR_1.sav", to.data.frame = TRUE)
 
-wave1930<-(filter(wang2, birth_y>=23, birth_y<=28))
-wave1940<-(filter(wang2, birth_y>=29, birth_y<=38))
-wave1950<-(filter(wang2, birth_y>=39, birth_y<=48))
-wave1960<-(filter(wang2, birth_y>=49, birth_y<=58)) 
-wave1970<-(filter(wang2, birth_y>=59, birth_y<=68))
-wave1980<-(filter(wang2, birth_y>=69, birth_y<=78))
-wave1990<-(filter(wang2, birth_y>=79, birth_y<=88))
+###summary(wang$birth_y)
+wang$birth<-as.numeric(
+  levels(wang$birth_y)[wang$birth_y])
+###summary(wang$birth)
+for(i in 1:nrow(wang)){
+  if(wang$birth[i] %in% 23:28){
+    wang$birth_p[i]<-"1"
+  }else if (wang$birth[i] %in% 29:38){wang$birth_p[i]<-"2"
+  }else if (wang$birth[i] %in% 39:48){wang$birth_p[i]<-"3"
+  }else if (wang$birth[i] %in% 49:58){wang$birth_p[i]<-"4"
+  }else if (wang$birth[i] %in% 59:68){wang$birth_p[i]<-"5"
+  }else if (wang$birth[i] %in% 69:78){wang$birth_p[i]<-"6"
+  }else if (wang$birth[i] %in% 79:88){wang$birth_p[i]<-"7"
+  }else{wang$birth_p[i]<-NA
+  }
+}
+###summary(wang$birth_p)    table(wang$birth_p, wang$birth)
 
-wave1930 <- data.frame(wave1930,category=c("H","H","H","H","H"))
-d2 <- data.frame(d2,category=c("L","L","L","L","L"))
-d3 <- rbind(d1,d2)
+labelsx2 <- c("1934-39","1940-49","1950-59","1960-69","1970-79","1980-89","1990-91")
+### happy life
+wang %>%
+  drop_na(happy) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(happy),n=n())->data1
+wang %>%
+  drop_na(life) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(life),n=n())->data2
+data1$point <- round(data1$point, digits=2)
+data2$point <- round(data2$point, digits=2)
+data1 <- data.frame(data1,category=c("H","H","H","H","H","H","H"))
+data2 <- data.frame(data2,category=c("L","L","L","L","L","L","L"))
+data3 <- rbind(data1,data2)
+
+### health Shealth
+wang %>%
+  drop_na(health) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(health),n=n())->data4
+wang %>%
+  drop_na(Shealth) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(Shealth),n=n())->data5
+data4$point <- round(data4$point, digits=2)
+data5$point <- round(data5$point, digits=2)
+data4 <- data.frame(data4,category=c("O","O","O","O","O","O","O"))
+data5 <- data.frame(data5,category=c("S","S","S","S","S","S","S"))
+data6 <- rbind(data4,data5)
+### work eco family marry
+wang %>%
+  drop_na(work_satis) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(work_satis),n=n())->data8
+wang %>%
+  drop_na(eco_satis) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(eco_satis),n=n())->data7
+data7$point <- round(data7$point, digits=2)
+data8$point <- round(data8$point, digits=2)
+data7 <- data.frame(data7,category=c("E","E","E","E","E","E","E"))
+data8 <- data.frame(data8,category=c("W","W","W","W","W","W","W"))
+data11 <- rbind(data7,data8)
+wang %>%
+  drop_na(family_satis) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(family_satis),n=n())->data9
+wang %>%
+  drop_na(marry_satis) %>% 
+  drop_na(birth_p) %>%
+  group_by(birth_p) %>%
+  summarise(point=mean(marry_satis),n=n())->data10
+data9$point <- round(data9$point, digits=2)
+data10$point <- round(data10$point, digits=2)
+data9 <- data.frame(data9,category=c("F","F","F","F","F","F","F"))
+data10 <- data.frame(data10,category=c("M","M","M","M","M","M","M"))
+data12 <- rbind(data9,data10)
+
+### graph$lifehappy_10
+data3 %>%
+  ggplot(aes(x=birth_p, y=point, group=category, color=category))+
+  geom_line(linetype="solid", size=1)+
+  geom_point(size=3)+
+  geom_text(aes(label=point,
+    vjust=1.5,hjust=0,alpha=1.2,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx2)+
+  scale_color_discrete(
+  labels=c("Happy","Life"))+
+  theme_light()+
+  theme(text=element_text(size=10, family="Comic Sans MS"),
+  axis.text.x=element_text(size=10))+
+  labs(
+    title="主樣本的生活快樂感和生活過得好不好",
+    x="主樣本出生年度",y="平均分數",
+    caption = "(1分最低，7分最高)")+
+annotate("text",x = 1:7, y=5.25,size=5, label=c("2133","4673","6001","4484","7112","8236","945"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:7, y=5.2,size=5, label=c("2137","4672","6001","4483","7114","8236","948"),colour="#00BFC4",fontface="bold")
+###graph$health_10
+data6 %>%
+  ggplot(aes(x=birth_p, y=point, group=category, color=category))+
+  geom_line(linetype="solid", alpha=0.4,size=1)+
+  geom_point(size=3)+
+  geom_text(aes(label=point,
+    vjust=1.2,hjust=1.2,size=4,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx2)+
+  scale_color_discrete(
+  labels=c("Health","Shealth"))+
+  theme_light()+
+  theme(text=element_text(size=10, family="Comic Sans MS"),
+  axis.text.x=element_text(size=10))+
+  labs(
+    title="主樣本和其伴侶的自評健康分數",x="主樣本出生年度",y="平均分數",caption = "(1分最低，5分最高)")+
+    annotate("text",x = 1:7, y=4.15,size=5, label=c("2558","5598","7242","5377","8663","9499","947"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:7, y=4.05,size=5, label=c("1555","4284","5894","4406","5363","3668","165"),colour="#00BFC4",fontface="bold")
+wang %>%
+  ggplot(aes(x=birth_p))
