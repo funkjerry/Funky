@@ -2,21 +2,12 @@
 title: "家庭動態社會調查主樣本的生活滿意度"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     source_code: embed
 ---
-```{r}
+```{r setup, include=FALSE}
 library(flexdashboard)
-library(readr)
-library(tidyr)
-library(stringr)
-library(lubridate)
 library(ggplot2)
-library(magrittr)
-library(showtext)
-library(grDevices)
-library(scales)
-library(colorspace)
 ```
 
 ```{r}
@@ -24,7 +15,9 @@ load("psfdPlot.Rda")
 load("psfddata.Rda")
 ```
 
-Column {.tabset data-width=400}
+主樣本波次(1~5)
+=======================================================================
+Row
 -------------------------------------
 ### 生活快樂與順遂分數
 
@@ -38,11 +31,42 @@ graph$happylife
 graph$health
 ```
 
-### 工作、家庭、經濟、婚姻滿意度分數
+Row
+----------------------------------------
+### 工作、經濟滿意度分數
 
 ```{r}
-graph$satisfaction
+graph$work
 ```
 
+### 家庭、婚姻(同居)滿意度分數
+```{r}
+graph$family
+```
+ 
+1930~2000(每十年一波次)
+=====================================================
+Row
+----------------------------------------
+### 生活快樂與順遂分數
+```{r}
+graph$happylife_10
+```
+ 
+### 自己與其伴侶的健康分數
+```{r}
+graph$health_10
+```
 
+Row
+----------------------------------------
+### 工作、經濟滿意度分數
+```{r}
+graph$work_10
+```
+
+### 家庭、婚姻(同居)滿意度分數
+```{r}
+graph$family_10
+```
 

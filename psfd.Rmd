@@ -73,81 +73,77 @@ d11 <- rbind(d7,d9)
 d12 <- rbind(d8,d10)
 
 save(
-  d3,d6,d11,labelsx,
+  d3,d6,d11,d12,labelsx,
+  data3,data6,data11,data12,labelsx2,mytheme,
   file="psfddata.Rda")
 
-### 作圖 d3
+### 作圖 d3 ylim(4.65,5.2)
+graph<-list()
 d3 %>%
   ggplot(aes(x=scale, y=point, group=category, color=category))+
-  geom_line(linetype="solid", size=1)+
-  geom_point(size=3)+
-  geom_text(aes(label=point,
-    vjust=1.5,hjust=0,alpha=1.2,
+  geom_line(linetype="solid", size=1,alpha=0.4)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=point,size=5,
+    vjust=1.5,hjust=0,
     fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
   scale_color_discrete(
   labels=c("Happy","Life"))+
-  theme_light()+
-  theme(text=element_text(size=10, family="Comic Sans MS"),
-  axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
     title="主樣本的生活快樂感和生活過得好不好",
-    x="主樣本出生年度",y="平均分數",
+    x="主樣本出生年度(1到5波次)",y="平均分數",
     caption = "(1分最低，7分最高)")+
-ylim(4.65,5.2)+
-annotate("text",x = 1:5, y=5.17,size=2.5, label=c("4981","9714","5834","9504","3554"),colour="#F8766D",fontface="bold")+
-annotate("text",x = 1:5, y=5.13,size=2.5, label=c("4980","9718","5835","9504","3558"),colour="#00BFC4",fontface="bold")->graph$happylife
+annotate("text",x = 1:5, y=5.17,size=4, label=c("4981","9714","5834","9504","3554"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:5, y=5.13,size=4, label=c("4980","9718","5835","9504","3558"),colour="#00BFC4",fontface="bold")+
+annotate("text",x=0.6,y=5.15,size=5,label="N",fontface="bold")+mytheme+ylim(4.65,NA)->graph$happylife
 ###d6 
 d6 %>%
   ggplot(aes(x=scale, y=point, group=category, color=category))+
-  geom_line(linetype="solid", size=1)+
-  geom_point(size=3)+
-  geom_text(aes(label=point,
-    vjust=1.2,hjust=1.2,alpha=1.2,
+  geom_line(linetype="solid", size=1,alpha=0.4)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=point,size=5,
+    vjust=1.2,hjust=1.2,
     fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
   scale_color_discrete(
   labels=c("Health","Shealth"))+
-  theme_light()+
-  theme(text=element_text(size=10, family="Comic Sans MS"),
-  axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
-    title="主樣本和其伴侶的自評健康分數",x="主樣本出生年度",y="平均分數",caption = "(1分最低，5分最高)")+
-    annotate("text",x = 1:5, y=4.15,size=3.5, label=c("5977","11683","6983","11687","3559"),colour="#F8766D",fontface="bold")+
-annotate("text",x = 1:5, y=4.05,size=3.5, label=c("4871","8745","5136","5439","1147"),colour="#00BFC4",fontface="bold")->graph$health
+    title="主樣本和其伴侶的自評健康分數",x="主樣本出生年度(1到5波次)",y="平均分數",caption = "(1分最低，5分最高)")+
+    annotate("text",x = 1:5, y=4.15,size=4, label=c("5977","11683","6983","11687","3559"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:5, y=4.05,size=4, label=c("4871","8745","5136","5439","1147"),colour="#00BFC4",fontface="bold")+
+  annotate("text",x=0.5,y=4.1,size=5,label="N",fontface="bold")+
+  mytheme+ylim(3.08,NA)->graph$health
 ###d11
 d11 %>%
   ggplot(aes(x=scale, y=point, group=category, color=category))+
-  geom_line(linetype="solid", size=1)+
-  geom_point(size=3)+
-  geom_text(aes(label=point,
-    vjust=1.6,hjust=1,alpha=1.2,
+  geom_line(linetype="solid", size=1,alpha=0.4)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=point,size=5,
+    vjust=1.6,hjust=1,
     fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
   scale_color_discrete(
   labels=c("Eco","Work"))+
-  theme(text=element_text(size=10, family="Comic Sans MS"),
-  axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
   title=
     "主樣本的工作、經濟滿意度分數",
       x="主樣本出生年度",y="平均分數",
         caption="(1分最低，4分最高)")+
         theme_light()+
-    annotate("text",x = 1:5, y=3.10,size=3.5, label=c("3492","3143","5091","8402","1419"),colour="#00BFC4",fontface="bold")+
-annotate("text",x = 1:5, y=3.03,size=3.5, label=c("956","1707","1094","2914","1582"),colour="#F8766D",fontface="bold")+
-annotate("text",x=0.45,y=3.06,size=3.5,label="n",fontface="bold")+
-ylim(2.53,3.15)->graph$work
+    annotate("text",x = 1:5, y=3.10,size=4, label=c("3492","3143","5091","8402","1419"),colour="#00BFC4",fontface="bold")+
+annotate("text",x = 1:5, y=3.03,size=4, label=c("956","1707","1094","2914","1582"),colour="#F8766D",fontface="bold")+
+annotate("text",x=0.5,y=3.065,size=5,label="N",fontface="bold")+
+  mytheme+ylim(2.51,NA)->graph$work
 ###d12
 d12 %>%
   ggplot(aes(x=scale, y=point, group=category, color=category))+
-  geom_line(linetype="solid", size=1)+
-  geom_point(size=3)+
-  geom_text(aes(label=point,
-    vjust=1.6,hjust=0.8,alpha=1.2,
+  geom_line(linetype="solid", size=1,alpha=0.4)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=point,size=5,
+    vjust=1.6,hjust=0.8,
     fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
@@ -161,10 +157,10 @@ d12 %>%
     "主樣本的家庭、婚姻(同居)滿意度分數",
       x="主樣本出生年度",y="平均分數",
         caption="(1分最低，4分最高)")+
-    annotate("text",x = 1:5, y=3.43,size=3.5, label=c("365","536","418","954","570"),colour="#00BFC4",fontface="bold")+
-annotate("text",x = 1:5, y=3.38,size=3.5, label=c("4978","9699","5831","9501","1584"),colour="#F8766D",fontface="bold")+
-annotate("text",x=0.45,y=3.41,size=3.5,label="n",fontface="bold")+
-ylim(3,3.45)->graph$family
+    annotate("text",x = 1:5, y=3.43,size=4, label=c("365","536","418","954","570"),colour="#00BFC4",fontface="bold")+
+annotate("text",x = 1:5, y=3.38,size=4, label=c("4978","9699","5831","9501","1584"),colour="#F8766D",fontface="bold")+
+annotate("text",x=0.5,y=3.41,size=5,label="N",fontface="bold")+
+  mytheme+ylim(3,NA)->graph$family
 save(graph, file="psfdPlot.Rda")
 ```{r}
 bookdown::publish_book()

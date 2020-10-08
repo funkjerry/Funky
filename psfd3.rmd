@@ -1,0 +1,52 @@
+---
+title: "psfd3"
+author: "Wang"
+date: "2020/10/8"
+output: html_document
+---
+library(foreign)
+library(ggplot2)
+library(dplyr)
+library(extrafont)
+library(tidyverse)
+loadfonts("win")
+<<<<<<< HEAD
+wang <- read.spss("D:/satis/RIRR_1.sav", to.data.frame = TRUE)
+
+###happy scale_x_discrete(labels=labelsx2)
+wang %>%
+  drop_na(happy) %>%
+  group_by(period) %>%
+  summarise(point=mean(happy),n=n())->da1
+da1$point <- round(da1$point, digits=2)
+da1 <- data.frame(da1,category=c("H"))
+da1 %>%+
+  ggplot()+
+  geom_line(aes(x=period,y=point),
+  linetype="solid",alpha=0.4, size=1)+
+  geom_point(,size=3,alpha=0.8)+
+  geom_text(aes(label=point,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  ggplot(aes(x=period,y=n))+
+  geom_col(size=1,color="darkblue",fill="yellow",position="dodge")
+annotate("text",x = 1:7, y=5.25,size=5, label=c("2133","4673","6001","4484","7112","8236","945"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:7, y=5.2,size=5, label=c("2137","4672","6001","4483","7114","8236","948"),colour="#00BFC4",fontface="bold")+
+annotate("text",x=0.5,y=5.225,size=5,label="N",fontface="bold")+
+  labs(
+    title="主樣本的生活快樂感和生活過得好不好",
+    x="主樣本出生年度(每十年一單位)",y="平均分數",
+    caption = "(1分最低，7分最高)")+
+  mytheme
+  
+###life
+wang %>%
+  drop_na(life) %>%
+  group_by(period) %>%
+  summarise(point=mean(life),n=n())->da2
+da2$point <- round(da2$point, digits=2)
+da2 <- data.frame(da2,category=c("L"))
+
+
+da3 <- rbind(d1,d2)
