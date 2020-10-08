@@ -9,69 +9,68 @@ library(foreign)
 library(ggplot2)
 library(dplyr)
 library(extrafont)
+library(tidyverse)
 loadfonts("win")
-wang <- read.spss("D:/satis/RIRR_1.sav")
-wang2 <- as.data.frame(wang)
-
-graph <-list()
+wang <- read.spss("C:/Users/steve/Downloads/satis/RIRR_1.sav", to.data.frame = TRUE)
 
 ### happy life
-wang2 %>%
+wang %>%
   drop_na(happy) %>% 
   group_by(scale) %>%
-  summarise(count=mean(happy))->d1
-wang2 %>%
+  summarise(point=mean(happy),n=n())->d1
+wang %>%
   drop_na(life) %>% 
   group_by(scale) %>%
-  summarise(count=mean(life))->d2
-d1$count <- round(d1$count, digits=2)
-d2$count <- round(d2$count, digits=2)
+  summarise(point=mean(life),n=n())->d2
+d1$point <- round(d1$point, digits=2)
+d2$point <- round(d2$point, digits=2)
 d1 <- data.frame(d1,category=c("H","H","H","H","H"))
 d2 <- data.frame(d2,category=c("L","L","L","L","L"))
 d3 <- rbind(d1,d2)
 labelsx <- c("1953-64","1935-54","1964-76","1977-83","1984-91")
 
 ###health Shealth
-wang2 %>%
+wang %>%
   drop_na(health) %>% 
   group_by(scale) %>%
-  summarise(count=mean(health))->d4
-wang2 %>%
+  summarise(point=mean(health),n=n())->d4
+wang %>%
   drop_na(Shealth) %>% 
   group_by(scale) %>%
-  summarise(count=mean(Shealth))->d5
-d4$count <- round(d4$count, digits=2)
-d5$count <- round(d5$count, digits=2)
+  summarise(point=mean(Shealth),n=n())->d5
+d4$point <- round(d4$point, digits=2)
+d5$point <- round(d5$point, digits=2)
 d4 <- data.frame(d4,category=c("O","O","O","O","O"))
 d5 <- data.frame(d5,category=c("S","S","S","S","S"))
 d6 <- rbind(d4,d5)
 
 ### work family eco marry satis
-wang2 %>%
+wang %>%
   drop_na(work_satis) %>% 
   group_by(scale) %>%
-  summarise(count=mean(work_satis))->d7
-wang2 %>%
+  summarise(point=mean(work_satis),n=n())->d7
+wang %>%
   drop_na(family_satis) %>% 
   group_by(scale) %>%
-  summarise(count=mean(family_satis))->d8
-wang2 %>%
+  summarise(point=mean(family_satis),n=n())->d8
+wang %>%
   drop_na(eco_satis) %>% 
   group_by(scale) %>%
-  summarise(count=mean(eco_satis))->d9
-wang2 %>%
+  summarise(point=mean(eco_satis),n=n())->d9
+wang %>%
   drop_na(marry_satis) %>% 
   group_by(scale) %>%
-  summarise(count=mean(marry_satis))->d10
-d7$count <- round(d7$count, digits=2)
-d8$count <- round(d8$count, digits=2)
+  summarise(point=mean(marry_satis),n=n())->d10
+d7$point <- round(d7$point, digits=2)
+d8$point <- round(d8$point, digits=2)
 d7 <- data.frame(d7,category=c("W","W","W","W","W"))
 d8 <- data.frame(d8,category=c("F","F","F","F","F"))
-d9$count <- round(d9$count, digits=2)
-d10$count <- round(d10$count, digits=2)
+d9$point <- round(d9$point, digits=2)
+d10$point <- round(d10$point, digits=2)
 d9 <- data.frame(d9,category=c("E","E","E","E","E"))
 d10 <- data.frame(d10,category=c("M","M","M","M","M"))
-d11 <- rbind(d7,d8,d9,d10)
+d11 <- rbind(d7,d9)
+d12 <- rbind(d8,d10)
 
 save(
   d3,d6,d11,labelsx,
@@ -79,60 +78,93 @@ save(
 
 ### 作圖 d3
 d3 %>%
-  ggplot(aes(x=scale, y=count, group=category, color=category))+
+  ggplot(aes(x=scale, y=point, group=category, color=category))+
   geom_line(linetype="solid", size=1)+
   geom_point(size=3)+
-  geom_text(aes(label=count,
+  geom_text(aes(label=point,
     vjust=1.5,hjust=0,alpha=1.2,
     fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
   scale_color_discrete(
   labels=c("Happy","Life"))+
+  theme_light()+
   theme(text=element_text(size=10, family="Comic Sans MS"),
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
     title="主樣本的生活快樂感和生活過得好不好",
     x="主樣本出生年度",y="平均分數",
-    caption = "(1分最低，7分最高)")->graph$happylife
+    caption = "(1分最低，7分最高)")+
+ylim(4.65,5.2)+
+annotate("text",x = 1:5, y=5.17,size=2.5, label=c("4981","9714","5834","9504","3554"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:5, y=5.13,size=2.5, label=c("4980","9718","5835","9504","3558"),colour="#00BFC4",fontface="bold")->graph$happylife
 ###d6 
 d6 %>%
-  ggplot(aes(x=scale, y=count, group=category, color=category))+
+  ggplot(aes(x=scale, y=point, group=category, color=category))+
   geom_line(linetype="solid", size=1)+
   geom_point(size=3)+
-  geom_text(aes(label=count,
-    vjust=1.5,hjust=1.2,alpha=1.2,
+  geom_text(aes(label=point,
+    vjust=1.2,hjust=1.2,alpha=1.2,
     fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
   scale_color_discrete(
   labels=c("Health","Shealth"))+
+  theme_light()+
   theme(text=element_text(size=10, family="Comic Sans MS"),
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
-    title="主樣本和其伴侶的自評健康分數",
-    x="主樣本出生年度",y="平均分數",
-    caption = "(1分最低，5分最高)")->graph$health
+    title="主樣本和其伴侶的自評健康分數",x="主樣本出生年度",y="平均分數",caption = "(1分最低，5分最高)")+
+    annotate("text",x = 1:5, y=4.15,size=3.5, label=c("5977","11683","6983","11687","3559"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:5, y=4.05,size=3.5, label=c("4871","8745","5136","5439","1147"),colour="#00BFC4",fontface="bold")->graph$health
 ###d11
 d11 %>%
-  ggplot(aes(x=scale, y=count, group=category, color=category))+
+  ggplot(aes(x=scale, y=point, group=category, color=category))+
   geom_line(linetype="solid", size=1)+
   geom_point(size=3)+
-  geom_text(aes(label=count,
+  geom_text(aes(label=point,
     vjust=1.6,hjust=1,alpha=1.2,
     fontface="bold"),
     show.legend = FALSE)+
   scale_x_discrete(labels=labelsx)+
   scale_color_discrete(
-  labels=c("Eco","Family","Marry","Work"))+
+  labels=c("Eco","Work"))+
   theme(text=element_text(size=10, family="Comic Sans MS"),
   axis.text.x=element_text(angle=45,vjust=0.5))+
   labs(
   title=
-    "主樣本的工作、家庭、經濟、婚姻滿意度分數",
+    "主樣本的工作、經濟滿意度分數",
       x="主樣本出生年度",y="平均分數",
-        caption="(1分最低，4分最高)")->graph$satisfaction
-    
+        caption="(1分最低，4分最高)")+
+        theme_light()+
+    annotate("text",x = 1:5, y=3.10,size=3.5, label=c("3492","3143","5091","8402","1419"),colour="#00BFC4",fontface="bold")+
+annotate("text",x = 1:5, y=3.03,size=3.5, label=c("956","1707","1094","2914","1582"),colour="#F8766D",fontface="bold")+
+annotate("text",x=0.45,y=3.06,size=3.5,label="n",fontface="bold")+
+ylim(2.53,3.15)->graph$work
+###d12
+d12 %>%
+  ggplot(aes(x=scale, y=point, group=category, color=category))+
+  geom_line(linetype="solid", size=1)+
+  geom_point(size=3)+
+  geom_text(aes(label=point,
+    vjust=1.6,hjust=0.8,alpha=1.2,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_discrete(
+  labels=c("Family","Marry"))+
+  theme_light()+
+  theme(text=element_text(size=10, family="Comic Sans MS"),
+  axis.text.x=element_text(angle=45,vjust=0.5))+
+  labs(
+  title=
+    "主樣本的家庭、婚姻(同居)滿意度分數",
+      x="主樣本出生年度",y="平均分數",
+        caption="(1分最低，4分最高)")+
+    annotate("text",x = 1:5, y=3.43,size=3.5, label=c("365","536","418","954","570"),colour="#00BFC4",fontface="bold")+
+annotate("text",x = 1:5, y=3.38,size=3.5, label=c("4978","9699","5831","9501","1584"),colour="#F8766D",fontface="bold")+
+annotate("text",x=0.45,y=3.41,size=3.5,label="n",fontface="bold")+
+ylim(3,3.45)->graph$family
 save(graph, file="psfdPlot.Rda")
 ```{r}
 bookdown::publish_book()
