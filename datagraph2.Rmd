@@ -1,0 +1,193 @@
+---
+title: "家庭動態社會調查主樣本的生活滿意度"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    source_code: embed
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(foreign)
+library(ggplot2)
+library(dplyr)
+library(extrafont)
+library(tidyverse)
+library(colorspace) 
+library(shinyjs)
+library(plotly)
+library(stringr)
+loadfonts("win")
+```
+
+```{r}
+load("psfdPlot.Rda")
+load("psfddata.Rda")
+load("psfdPlot2.Rda")
+load("psfddata2.Rda")
+```
+
+主樣本波次(1~5)
+=====================================
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### happy & life
+    
+```{r}
+graph$happylife
+```
+
+### health & Shealth
+
+```{r}
+graph$health
+```
+
+### eco & work
+
+```{r}
+graph$work
+```
+
+### family & marry
+
+```{r}
+graph$family
+```
+
+1930~2000(每十年一波次)
+=====================================  
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### happy & life
+    
+```{r}
+graph$happylife_10
+```
+
+### health & Shealth
+
+```{r}
+graph$health_10
+```
+
+### eco & work
+
+```{r}
+graph$work_10
+```
+
+### family & marry
+
+```{r}
+graph$family_10
+```
+   
+每年度的主樣本
+=====================================     
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### happy
+    
+```{r}
+graph2$happyp2
+```
+
+### life
+
+```{r}
+graph2$lifep2
+```
+
+### health
+
+```{r}
+graph2$healthp2
+```
+
+### Shealth
+
+```{r}
+graph2$Shealthp2
+```
+
+### eco
+
+```{r}
+graph2$eco_satis2
+```
+
+### work
+
+```{r}
+graph2$work_satis2
+```
+
+### family
+
+```{r}
+graph2$family_satis2
+```
+
+### marry
+
+```{r}
+graph2$marry_satis2
+```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### happy
+    
+```{r}
+graph2$happyp2
+```
+
+### life
+
+```{r}
+graph2$lifep2
+```
+
+### health
+
+```{r}
+graph2$healthp2
+```
+
+### Shealth
+
+```{r}
+graph2$Shealthp2
+```
+
+### eco
+
+```{r}
+graph2$eco_satis2
+```
+
+### work
+
+```{r}
+graph2$work_satis2
+```
+
+### family
+
+```{r}
+graph2$family_satis2
+```
+
+### marry
+
+```{r}
+graph2$marry_satis2
+```

@@ -9,44 +9,207 @@ library(ggplot2)
 library(dplyr)
 library(extrafont)
 library(tidyverse)
+library(colorspace) 
+library(shinyjs)
+library(plotly)
+library(stringr)
 loadfonts("win")
-<<<<<<< HEAD
+
+### raw data
 wang <- read.spss("D:/satis/RIRR_1.sav", to.data.frame = TRUE)
 
-###happy scale_x_discrete(labels=labelsx2)
-wang %>%
-  drop_na(happy) %>%
-  group_by(period) %>%
-  summarise(point=mean(happy),n=n())->da1
-da1$point <- round(da1$point, digits=2)
-da1 <- data.frame(da1,category=c("H"))
-da1 %>%+
-  ggplot()+
-  geom_line(aes(x=period,y=point),
-  linetype="solid",alpha=0.4, size=1)+
-  geom_point(,size=3,alpha=0.8)+
-  geom_text(aes(label=point,size=5,
-    vjust=1.5,hjust=0,
-    fontface="bold"),
-    show.legend = FALSE)+
-  ggplot(aes(x=period,y=n))+
-  geom_col(size=1,color="darkblue",fill="yellow",position="dodge")
-annotate("text",x = 1:7, y=5.25,size=5, label=c("2133","4673","6001","4484","7112","8236","945"),colour="#F8766D",fontface="bold")+
-annotate("text",x = 1:7, y=5.2,size=5, label=c("2137","4672","6001","4483","7114","8236","948"),colour="#00BFC4",fontface="bold")+
-annotate("text",x=0.5,y=5.225,size=5,label="N",fontface="bold")+
-  labs(
-    title="主樣本的生活快樂感和生活過得好不好",
-    x="主樣本出生年度(每十年一單位)",y="平均分數",
-    caption = "(1分最低，7分最高)")+
-  mytheme
+mydata = wang[c("scale","period","happy","life","health","Shealth","eco_satis","work_satis","family_satis", "marry_satis")]
+
+scale <- c("1953-64主樣本","1935-54主樣本",
+  "1964-76主樣本","1977-83主樣本","1984-91主樣本")
   
-###life
-wang %>%
+  
+### choose colour
+choose_palette(gui="shiny")    
+colorspace::sequential_hcl(n = 5, h = c(8, 310), c = c(80, NA, 40), l = c(40, 75), power = c(1, 1), register = "Custom-Palette")
+
+### happy clean data
+mydata %>%
+  drop_na(happy) %>%
+  group_by(scale, period) %>%
+  mutate(point=mean(happy),n=n())->happy
+happy$point <- round(happy$point, digits=2)
+
+### life clean data
+mydata %>%
   drop_na(life) %>%
-  group_by(period) %>%
-  summarise(point=mean(life),n=n())->da2
-da2$point <- round(da2$point, digits=2)
-da2 <- data.frame(da2,category=c("L"))
+  group_by(scale, period) %>%
+  mutate(point=mean(life),n=n())->life
+life$point <- round(life$point, digits=2)
 
+### health clean data
+mydata %>%
+  drop_na(health) %>%
+  group_by(scale, period) %>%
+  mutate(point=mean(health),n=n())->health
+health$point <- round(health$point, digits=2)
 
-da3 <- rbind(d1,d2)
+### Shealth clean data
+mydata %>%
+  drop_na(Shealth) %>%
+  group_by(scale, period) %>%
+  mutate(point=mean(Shealth),n=n())->Shealth
+Shealth$point <- round(Shealth$point, digits=2)
+
+### eco_satis clean data
+mydata %>%
+  drop_na(eco_satis) %>%
+  group_by(scale, period) %>%
+  mutate(point=mean(eco_satis),n=n())->eco_satis
+eco_satis$point <- round(eco_satis$point, digits=2)
+
+### work_satis clean data
+mydata %>%
+  drop_na(work_satis) %>%
+  group_by(scale, period) %>%
+  mutate(point=mean(work_satis),n=n())->work_satis
+work_satis$point <- round(work_satis$point, digits=2)
+
+### family_satis clean data
+mydata %>%
+  drop_na(family_satis) %>%
+  group_by(scale, period) %>%
+  mutate(point=mean(family_satis),n=n())->family_satis
+family_satis$point <- round(family_satis$point, digits=2)
+
+### marry_satis clean data
+mydata %>%
+  drop_na(marry_satis) %>%
+  group_by(scale, period) %>%
+  mutate(point=mean(marry_satis),n=n())->marry_satis
+marry_satis$point <- round(marry_satis$point, digits=2)
+
+graph2<-list()
+###happy graph
+happy %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(2007,2020,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本的生活過得快樂嗎",
+      x="調查年度",y="平均分數",caption="(1分最低，7分最高)")+mytheme->graph2$happyp
+ggplotly(
+  graph2$happyp, tooltip = "text")->graph2$happyp2
+
+###life graph
+life %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(2007,2020,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本的生活過得好不好",
+      x="調查年度",y="平均分數",caption="(1分最低，7分最高)")+mytheme->graph2$lifep
+ggplotly(
+  graph2$lifep, tooltip = "text")->graph2$lifep2
+
+### health graph
+health %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(1999,2018,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本的自評健康狀態",
+      x="調查年度",y="平均分數",caption="(1分最低，5分最高)")+mytheme->graph2$healthp
+ggplotly(
+  graph2$healthp, tooltip = "text")->graph2$healthp2
+  
+### Shealth graph
+Shealth %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(1999,2018,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本伴侶的自評健康狀態",
+      x="調查年度",y="平均分數",caption="(1分最低，5分最高)")+mytheme->graph2$Shealthp
+ggplotly(
+  graph2$Shealthp, tooltip = "text")->graph2$Shealthp2
+
+  
+### eco_satis graph
+eco_satis %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(2016,2018,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本的自評經濟滿意度",
+      x="調查年度",y="平均分數",caption="(1分最低，4分最高)")+mytheme->graph2$eco_satis
+ggplotly(
+  graph2$eco_satis, tooltip = "text")->graph2$eco_satis2
+
+### work_satis graph
+work_satis %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(2007,2018,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本的自評工作滿意度",
+      x="調查年度",y="平均分數",caption="(1分最低，4分最高)")+mytheme->graph2$work_satis
+ggplotly(
+  graph2$work_satis, tooltip = "text")->graph2$work_satis2
+ 
+### family_satis graph
+family_satis %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(2007,2018,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本的自評家庭滿意度",
+      x="調查年度",y="平均分數",caption="(1分最低，4分最高)")+mytheme->graph2$family_satis
+ggplotly(
+  graph2$family_satis, tooltip = "text")->graph2$family_satis2
+
+### marry_satis graph
+marry_satis %>%
+  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,9), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    scale_x_continuous(breaks=seq(2018,1))+
+    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
+    labs(title="主樣本的自評婚姻(同居)滿意度",
+      x="調查年度",y="平均分數",caption="(1分最低，4分最高)")+mytheme->graph2$marry_satis
+ggplotly(
+  graph2$marry_satis, tooltip = "text")->graph2$marry_satis2
+graph2$marry_satis2
+
+### save data and graph
+save(
+  happy,life,health,Shealth,eco_satis,work_satis,
+  family_satis,marry_satis,scale,mytheme,
+  file="psfddata2.Rda")
+save(graph2, file="psfdPlot2.Rda")

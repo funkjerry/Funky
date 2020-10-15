@@ -10,6 +10,7 @@ library(ggplot2)
 library(dplyr)
 library(extrafont)
 library(tidyverse)
+library(colorspace) 
 loadfonts("win")
 wang <- read.spss("C:/Users/steve/Downloads/satis/RIRR_1.sav", to.data.frame = TRUE)
 
@@ -162,6 +163,3 @@ annotate("text",x = 1:5, y=3.38,size=4, label=c("4978","9699","5831","9501","158
 annotate("text",x=0.5,y=3.41,size=5,label="N",fontface="bold")+
   mytheme+ylim(3,NA)->graph$family
 save(graph, file="psfdPlot.Rda")
-```{r}
-bookdown::publish_book()
-```
