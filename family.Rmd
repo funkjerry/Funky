@@ -1,0 +1,30 @@
+---
+title: "家庭動態社會調查五波次歷年自評家庭、婚姻滿意度分數"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("psfddata2.Rda")
+load("psfdPlot2.Rda")
+```
+
+Column
+-------------------------------------
+
+### family
+    
+```{r}
+graph2$family_satis2
+```
+
+Column
+-------------------------------------
+
+### marry
+
+```{r}
+graph2$marry_satis2
+```

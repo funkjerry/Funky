@@ -1,0 +1,30 @@
+---
+title: "家庭動態社會調查五波次歷年自評健康分數"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("psfddata2.Rda")
+load("psfdPlot2.Rda")
+```
+
+Column
+-------------------------------------
+
+### health
+    
+```{r}
+graph2$healthp2
+```
+
+Column
+-------------------------------------
+
+### Shealth
+
+```{r}
+graph2$Shealthp2
+```

@@ -1,0 +1,31 @@
+---
+title: "家庭動態社會調查五波次歷年生活快樂與順遂感分數"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("psfddata2.Rda")
+load("psfdPlot2.Rda")
+```
+
+Column
+-------------------------------------
+
+### happy
+    
+```{r}
+graph2$happyp2
+```
+
+Column
+-------------------------------------
+
+### life
+
+```{r}
+graph2$lifep2
+```
+

@@ -9,8 +9,8 @@ library(foreign)
 library(ggplot2)
 library(dplyr)
 library(extrafont)
-library(tidyverse)
 library(colorspace) 
+library(ggpubr)
 loadfonts("win")
 wang <- read.spss("C:/Users/steve/Downloads/satis/RIRR_1.sav", to.data.frame = TRUE)
 
@@ -73,6 +73,7 @@ d10 <- data.frame(d10,category=c("M","M","M","M","M"))
 d11 <- rbind(d7,d9)
 d12 <- rbind(d8,d10)
 
+###save data
 save(
   d3,d6,d11,d12,labelsx,
   data3,data6,data11,data12,labelsx2,mytheme,
@@ -93,11 +94,12 @@ d3 %>%
   labels=c("Happy","Life"))+
   labs(
     title="主樣本的生活快樂感和生活過得好不好",
-    x="主樣本出生年度(1到5波次)",y="平均分數",
-    caption = "(1分最低，7分最高)")+
-annotate("text",x = 1:5, y=5.17,size=4, label=c("4981","9714","5834","9504","3554"),colour="#F8766D",fontface="bold")+
-annotate("text",x = 1:5, y=5.13,size=4, label=c("4980","9718","5835","9504","3558"),colour="#00BFC4",fontface="bold")+
-annotate("text",x=0.6,y=5.15,size=5,label="N",fontface="bold")+mytheme+ylim(4.65,NA)->graph$happylife
+    x="主樣本波次",y="平均分數",
+    caption = "(4 ~ 5.5區間，1分最低，7分最高)")+
+    mytheme+ylim(4,5.5)+
+    annotate("text",x = 1:5, y=5.5,size=4, label=c("4981","9714","5834","9504","3554"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:5, y=5.4,size=4, label=c("4980","9718","5835","9504","3558"),colour="#00BFC4",fontface="bold")+
+annotate("text",x=0.6,y=5.45,size=5,label="N",fontface="bold")->graph$happylife
 ###d6 
 d6 %>%
   ggplot(aes(x=scale, y=point, group=category, color=category))+
@@ -111,11 +113,11 @@ d6 %>%
   scale_color_discrete(
   labels=c("Health","Shealth"))+
   labs(
-    title="主樣本和其伴侶的自評健康分數",x="主樣本出生年度(1到5波次)",y="平均分數",caption = "(1分最低，5分最高)")+
-    annotate("text",x = 1:5, y=4.15,size=4, label=c("5977","11683","6983","11687","3559"),colour="#F8766D",fontface="bold")+
-annotate("text",x = 1:5, y=4.05,size=4, label=c("4871","8745","5136","5439","1147"),colour="#00BFC4",fontface="bold")+
-  annotate("text",x=0.5,y=4.1,size=5,label="N",fontface="bold")+
-  mytheme+ylim(3.08,NA)->graph$health
+    title="主樣本和其伴侶的自評健康分數",x="主樣本波次",y="平均分數",caption = "(2.5 ~ 4.5區間，1分最低，5分最高)")+
+    mytheme+ylim(2.5,4.5)+
+    annotate("text",x = 1:5, y=4.5,size=4, label=c("5977","11683","6983","11687","3559"),colour="#F8766D",fontface="bold")+
+annotate("text",x = 1:5, y=4.4,size=4, label=c("4871","8745","5136","5439","1147"),colour="#00BFC4",fontface="bold")+
+annotate("text",x=0.5,y=4.45,size=5,label="N",fontface="bold")->graph$health
 ###d11
 d11 %>%
   ggplot(aes(x=scale, y=point, group=category, color=category))+
@@ -131,13 +133,12 @@ d11 %>%
   labs(
   title=
     "主樣本的工作、經濟滿意度分數",
-      x="主樣本出生年度",y="平均分數",
-        caption="(1分最低，4分最高)")+
-        theme_light()+
-    annotate("text",x = 1:5, y=3.10,size=4, label=c("3492","3143","5091","8402","1419"),colour="#00BFC4",fontface="bold")+
-annotate("text",x = 1:5, y=3.03,size=4, label=c("956","1707","1094","2914","1582"),colour="#F8766D",fontface="bold")+
-annotate("text",x=0.5,y=3.065,size=5,label="N",fontface="bold")+
-  mytheme+ylim(2.51,NA)->graph$work
+      x="主樣本波次",y="平均分數",
+        caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
+        mytheme+ylim(2.5,3.5)+
+        annotate("text",x = 1:5, y=3.5,size=4, label=c("3492","3143","5091","8402","1419"),colour="#00BFC4",fontface="bold")+
+annotate("text",x = 1:5, y=3.4,size=4, label=c("956","1707","1094","2914","1582"),colour="#F8766D",fontface="bold")+
+annotate("text",x=0.5,y=3.45,size=5,label="N",fontface="bold")->graph$work
 ###d12
 d12 %>%
   ggplot(aes(x=scale, y=point, group=category, color=category))+
@@ -156,10 +157,125 @@ d12 %>%
   labs(
   title=
     "主樣本的家庭、婚姻(同居)滿意度分數",
-      x="主樣本出生年度",y="平均分數",
-        caption="(1分最低，4分最高)")+
-    annotate("text",x = 1:5, y=3.43,size=4, label=c("365","536","418","954","570"),colour="#00BFC4",fontface="bold")+
-annotate("text",x = 1:5, y=3.38,size=4, label=c("4978","9699","5831","9501","1584"),colour="#F8766D",fontface="bold")+
-annotate("text",x=0.5,y=3.41,size=5,label="N",fontface="bold")+
-  mytheme+ylim(3,NA)->graph$family
+      x="主樣本波次",y="平均分數",
+        caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
+        mytheme+ylim(2.5,3.5)+annotate("text",x = 1:5, y=3.5,size=4, label=c("365","536","418","954","570"),colour="#00BFC4",fontface="bold")+
+annotate("text",x = 1:5, y=3.4,size=4, label=c("4978","9699","5831","9501","1584"),colour="#F8766D",fontface="bold")+
+annotate("text",x=0.5,y=3.45,size=5,label="N",fontface="bold")->graph$family
 save(graph, file="psfdPlot.Rda")
+
+### happy life n
+d3 %>%
+  filter(category == "H") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#F8766D", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="生活快樂感(N)",x="波次",y="平均分數",caption = "(1分最低，7分最高)")+mytheme->graph$happyn
+
+d3 %>%
+  filter(category == "L") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#00BFC4", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="生活過得好不好(N)",x="波次",y="平均分數",caption = "(1分最低，7分最高)")+mytheme->graph$lifen
+    
+### health Shealth n
+d6 %>%
+  filter(category == "O") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#F8766D", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="自評健康分數(N)",x="波次",y="平均分數",caption = "(1分最低，5分最高)")+mytheme->graph$healthn
+
+d6 %>%
+  filter(category == "S") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#00BFC4", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="伴侶健康分數(N)",x="波次",y="平均分數",caption = "(1分最低，5分最高)")+mytheme->graph$Shealthn
+    
+### eco work
+d11 %>%
+  filter(category == "E") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#F8766D", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="經濟滿意度(N)",x="波次",y="平均分數",caption = "(1分最低，4分最高)")+mytheme->graph$econ
+    
+d11 %>%
+  filter(category == "W") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#00BFC4", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="工作滿意度(N)",x="波次",y="平均分數",caption = "(1分最低，4分最高)")+mytheme->graph$workn
+    
+### family marry
+d12 %>%
+  filter(category == "F") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#F8766D", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="家庭滿意度(N)",x="波次",y="平均分數",caption = "(1分最低，4分最高)")+mytheme->graph$familyn
+
+d12 %>%
+  filter(category == "M") %>%
+  ggplot(aes(x=scale,y=n))+
+  geom_bar(stat="identity", fill="#00BFC4", width=0.7)+
+  geom_point(size=3,alpha=0.8)+
+  geom_text(aes(label=n,size=5,
+    vjust=1.5,hjust=0,
+    fontface="bold"),
+    show.legend = FALSE)+
+  scale_x_discrete(labels=labelsx)+
+  labs(
+    title="婚姻(同居)滿意度(N)",x="波次",y="平均分數",caption = "(1分最低，4分最高)")+mytheme->graph$marryn
+
+ggarrange(graph$happylife,
+  ggarrange(graph$happyn,graph$lifen,nrow=2),
+  widths = c(7,3),ncol=2 )->graph$happylifen
+
+ggarrange(graph$health,
+  ggarrange(graph$healthn,graph$Shealthn,nrow=2),
+  widths = c(7,3),ncol=2)->graph$happylifen

@@ -1,0 +1,30 @@
+---
+title: "家庭動態社會調查五波次歷年自評經濟、工作滿意度分數"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("psfddata2.Rda")
+load("psfdPlot2.Rda")
+```
+
+Column
+-------------------------------------
+
+### eco
+    
+```{r}
+graph2$eco_satis2
+```
+
+Column
+-------------------------------------
+
+### work
+
+```{r}
+graph2$work_satis2
+```
