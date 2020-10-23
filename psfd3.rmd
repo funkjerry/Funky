@@ -26,7 +26,7 @@ scale <- c("1953-64主樣本","1935-54主樣本",
   
 ### choose colour
 choose_palette(gui="shiny")    
-colorspace::sequential_hcl(n = 5, h = c(8, 310), c = c(80, NA, 40), l = c(40, 75), power = c(1, 1), register = "Custom-Palette")
+colorspace::sequential_hcl(n = 5, h = c(8, 310), c = c(80, NA, 40), l = c(40, 75), power = c(1, 1), register = "Custom-Palette")->pal
 
 ### happy clean data
 mydata %>%
@@ -84,10 +84,61 @@ mydata %>%
   mutate(point=mean(marry_satis),n=n())->marry_satis
 marry_satis$point <- round(marry_satis$point, digits=2)
 
+graph1<-list()
 graph2<-list()
+graph3<-list()
+graph4<-list()
 
 
 ###happy graph
+
+```{r}
+
+tg <- ddply(ToothGrowth, c("supp", "dose"), summarise, length=mean(len))
+
+fig<-list()
+happy %>%
+  plot_ly(
+    x= ~period)->fig
+fig %>%
+  filter(scale=="1 1953-64年出生之主樣本") %>% add_lines(y=~point, name = "第一波", line=list(shape = "linear"))->fig
+
+fig %>%
+  filter(scale=="2 1935-54年出生之主樣本") %>% add_lines(y=~point, name = "第二波", line=list(shape = "linear"))->fig
+
+fig %>%
+  filter(scale=="3 1964-76年出生之主樣本") %>% add_lines(y=~point, name = "第三波", line=list(shape = "linear"))->fig
+
+fig %>%
+  filter(scale=="4 1977-83年出生之主樣本") %>% add_lines(y=~point, name = "第四波", line=list(shape = "linear"))->fig
+
+fig %>%
+  filter(scale=="5 1984-91年出生之主樣本") %>% add_lines(y=~point, name = "第五波", line=list(shape = "linear"))->fig
+
+fig
+
+    y=~point,
+    type = 'scatter',
+    transforms = list(
+      list(
+        type = 'groupby',
+        groups = ~scale,
+        styles = list(
+          list(target=1, value = list(marker = list())),
+          list(target=2, value = list(marker = list())),
+          list(target=3, value = list(marker = list())),
+          list(target=4, value = list(marker = list())),
+          list(target=5, value = list(marker = list()))))))
+          
+          
+happy %>%
+    plot_ly(x=~period, y=~point, color=~scale, colors=pal, type="bar"), text= ~paste(
+  "Scale:", ~scale)), 
+  "<br>N:", ~n, 
+  "<br>Point:", ~point))
+```
+
+
 happy %>%
   ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
   "Scale:", strtrim(scale,9), 
@@ -95,13 +146,10 @@ happy %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(2007,2020,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本的生活過得快樂嗎",
-      x="調查年度",y="平均分數",caption="(4 ~ 5.5區間，1分最低，7分最高)")+
-      ylim(4,5.5)->graph2$happyp
+    ggtitle(paste("五波主樣本的生活快樂感"))+
+    ylim(4,5.5)->graph1$happyp
 ggplotly(
-  graph2$happyp, tooltip = "text")->graph2$happyp2
+  graph1$happyp, tooltip = "text")->graph1$happyp2
 
 ###life graph
 life %>%
@@ -111,13 +159,10 @@ life %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(2007,2020,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本的生活過得好不好",
-      x="調查年度",y="平均分數",caption="(4 ~ 5.5區間，1分最低，7分最高)")+
-      ylim(4,5.5)->graph2$lifep
+    ggtitle(paste("五波主樣本的生活過得好不好"))+
+    ylim(4,5.5)->graph1$lifep
 ggplotly(
-  graph2$lifep, tooltip = "text")->graph2$lifep2
+  graph1$lifep, tooltip = "text")->graph1$lifep2
 
 ### health graph
 health %>%
@@ -127,15 +172,11 @@ health %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(1999,2018,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本的自評健康狀態",
-      x="調查年度",y="平均分數",caption="(2.5 ~ 4.5區間，1分最低，5分最高)")+
-      ylim(2.5,4.5)->graph2$healthp
+    ggtitle(paste("五波主樣本的自評健康狀態"))+
+    ylim(2.5,4.5)->graph2$healthp
 ggplotly(
   graph2$healthp, tooltip = "text")->graph2$healthp2
-graph2$healthp2
-  
+
 ### Shealth graph
 Shealth %>%
   ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
@@ -144,14 +185,10 @@ Shealth %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(1999,2018,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本伴侶的自評健康狀態",
-      x="調查年度",y="平均分數",caption="(2.5 ~ 4.5區間，1分最低，5分最高)")+
-      ylim(2.5,4.5)->graph2$Shealthp
+    ggtitle(paste("五波主樣本的伴侶健康狀態"))+
+    ylim(2.5,4.5)->graph2$Shealthp
 ggplotly(
   graph2$Shealthp, tooltip = "text")->graph2$Shealthp2
-
   
 ### eco_satis graph
 eco_satis %>%
@@ -161,13 +198,10 @@ eco_satis %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(2016,2018,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本的自評經濟滿意度",
-      x="調查年度",y="平均分數",caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
-      ylim(2.5,3.5)->graph2$eco_satis
+    ggtitle(paste("五波主樣本的經濟滿意度"))+
+    ylim(2.5,3.5)->graph3$eco_satis
 ggplotly(
-  graph2$eco_satis, tooltip = "text")->graph2$eco_satis2
+  graph3$eco_satis, tooltip = "text")->graph3$eco_satis2
 
 ### work_satis graph
 work_satis %>%
@@ -177,13 +211,10 @@ work_satis %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(2007,2018,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本的自評工作滿意度",
-      x="調查年度",y="平均分數",caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
-      ylim(2.5,3.5)->graph2$work_satis
+    ggtitle(paste("五波主樣本的工作滿意度"))+
+    ylim(2.5,3.5)->graph3$work_satis
 ggplotly(
-  graph2$work_satis, tooltip = "text")->graph2$work_satis2
+  graph3$work_satis, tooltip = "text")->graph3$work_satis2
  
 ### family_satis graph
 family_satis %>%
@@ -193,13 +224,10 @@ family_satis %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(2007,2018,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本的自評家庭滿意度",
-      x="調查年度",y="平均分數",caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
-      ylim(2.5,3.5)->graph2$family_satis
+    ggtitle(paste("五波主樣本的家庭滿意度"))+
+    ylim(2.5,3.5)->graph4$family_satis
 ggplotly(
-  graph2$family_satis, tooltip = "text")->graph2$family_satis2
+  graph4$family_satis, tooltip = "text")->graph4$family_satis2
 
 ### marry_satis graph
 marry_satis %>%
@@ -209,18 +237,30 @@ marry_satis %>%
   "<br>Point:", point)))+
   geom_line(linetype="solid",alpha=0.4, size=1)+
   geom_point(size=3,alpha=0.8)+
-    scale_x_continuous(breaks=seq(2018,1))+
-    scale_color_discrete_sequential(palette="Custom-Palette",labels=scale)+
-    labs(title="主樣本的自評婚姻(同居)滿意度",
-      x="調查年度",y="平均分數",caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
-      ylim(2.5,3.5)->graph2$marry_satis
+    ggtitle(paste("五波主樣本的婚姻(同居)滿意度"))+
+    ylim(2.5,3.5)->graph4$marry_satis
 ggplotly(
-  graph2$marry_satis, tooltip = "text")->graph2$marry_satis2
-graph2$marry_satis2
+  graph4$marry_satis, tooltip = "text")->graph4$marry_satis2
+
 
 ### save data and graph
 save(
-  happy,life,health,Shealth,eco_satis,work_satis,
-  family_satis,marry_satis,scale,
+  happy,life,
+  file="psfddata1.Rda")
+
+save(
+  health,Shealth,
   file="psfddata2.Rda")
+  
+save(
+  eco_satis,work_satis,
+  file="psfddata3.Rda")
+  
+save(
+  family_satis,marry_satis,
+  file="psfddata4.Rda")
+
+save(graph1, file="psfdPlot1.Rda")
 save(graph2, file="psfdPlot2.Rda")
+save(graph3, file="psfdPlot3.Rda")
+save(graph4, file="psfdPlot4.Rda")

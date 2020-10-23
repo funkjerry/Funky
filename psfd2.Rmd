@@ -134,7 +134,7 @@ data3 %>%
   mytheme+ylim(4,5.5)+
   annotate("text",x = 1:7, y=5.5,size=4, label=c("2133","4673","6001","4484","7112","8236","945"),colour="#F8766D",fontface="bold")+
 annotate("text",x = 1:7, y=5.4,size=4, label=c("2137","4672","6001","4483","7114","8236","948"),colour="#00BFC4",fontface="bold")+
-annotate("text",x=0.5,y=5.45,size=5,label="N",fontface="bold")+labs(title="主樣本的生活快樂感和生活過得好不好",x="主樣本出生年度(每十年一單位)",y="平均分數",caption = "(1分最低，7分最高)")->graph$happylife10
+annotate("text",x=0.5,y=5.45,size=5,label="N",fontface="bold")+labs(title="主樣本的生活快樂感和生活過得好不好",x="主樣本出生世代",y="平均分數",caption = "(1分最低，7分最高)")->graph$happylife10
 ###happy life n
 data3 %>%
   filter(category == "H") %>%
@@ -175,7 +175,7 @@ data6 %>%
   scale_color_discrete(
   labels=c("Health","Shealth"))+
   labs(
-    title="主樣本和其伴侶的自評健康分數",x="主樣本出生年度(每十年一單位)",y="平均分數",caption = "(2.5 ~ 4.5區間，1分最低，5分最高)")+
+    title="主樣本和其伴侶的自評健康分數",x="主樣本出生世代",y="平均分數",caption = "(2.5 ~ 4.5區間，1分最低，5分最高)")+
     mytheme+ylim(2.5,4.5)+
     annotate("text",x = 1:7, y=4.5,size=4, label=c("2558","5598","7242","5377","8663","9499","947"),colour="#F8766D",fontface="bold")+
 annotate("text",x = 1:7, y=4.4,size=4, label=c("1555","4284","5894","4406","5363","3668","165"),colour="#00BFC4",fontface="bold")+
@@ -223,7 +223,7 @@ data11 %>%
   labels=c("Eco","Work"))+
   labs(title=
     "主樣本的工作、經濟滿意度分數",
-      x="主樣本出生年度(每十年一單位)",y="平均分數",
+      x="主樣本出生世代",y="平均分數",
         caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
    mytheme+ylim(2.5,3.5)+annotate("text",x = 1:7, y=3.4,size=4, label=c("316","839","1157","829","1794","2899","419"),colour="#F8766D",fontface="bold")+
 annotate("text",x = 1:7, y=3.5,size=4, label=c("316","1283","3474","3778","6294","6026","376"),colour="#00BFC4",fontface="bold")+
@@ -273,7 +273,7 @@ data12 %>%
   labs(
   title=
     "主樣本的家庭、婚姻(同居)滿意度分數",
-      x="主樣本出生年度(每十年一單位)",y="平均分數",
+      x="主樣本出生世代",y="平均分數",
         caption="(2.5 ~ 3.5區間，1分最低，4分最高)")+
   mytheme+ylim(2.5,3.5)+annotate("text",x = 1:7, y=3.45,size=4, label=c("2126","4665","5998","4479","7110","6789","421"),colour="#F8766D",fontface="bold")+
 annotate("text",x = 1:7, y=3.5,size=4, label=c("62","269","427","329","645","1026","85"),colour="#00BFC4",fontface="bold")+

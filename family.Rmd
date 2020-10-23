@@ -7,8 +7,8 @@ output:
 ---
 
 ```{r}
-load("psfddata2.Rda")
-load("psfdPlot2.Rda")
+load("psfddata4.Rda")
+load("psfdPlot4.Rda")
 ```
 
 Column
@@ -17,7 +17,7 @@ Column
 ### family
     
 ```{r}
-graph2$family_satis2
+graph4$family_satis2
 ```
 
 Column
@@ -26,5 +26,5 @@ Column
 ### marry
 
 ```{r}
-graph2$marry_satis2
+graph4$marry_satis2
 ```

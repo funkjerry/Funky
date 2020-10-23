@@ -1,0 +1,74 @@
+---
+title: "rr2020"
+author: "Wang"
+date: "2020/10/23"
+output: html_document
+---
+
+```{r}
+library(foreign)
+library(ggplot2)
+library(dplyr)
+```
+
+
+```{r}
+wang5 <- import("D:/satis/R2020.sav")
+```
+
+```{r}
+wang5 %>%
+  filter(id%%10==0)->wang6
+```
+
+```{r}
+export(wang7, "rr2020.sav")
+```
+
+```{r}
+wang2 <- data.frame(wang$id,wang$scale)
+```
+
+```{r}
+if wang6$id == wang2$wang.id{
+  wang6$scale <- wang2$wang.scale
+}else{wang6$scale <-NA
+```
+```{r}
+wang6$id == wang2$wang.id
+```
+
+
+```{r}
+wang2$wang.id[i] == wang6$id[i]
+wang2$wang.id == wang6$id ->wang2$tf
+as.numeric(wang6$id)->idn
+as.numeric(wang2$wang.id)->wang2$wang.id
+filter(wang2,wang2$wang.id %in% idn)->wang3
+distinct(wang3)->wang4
+wang4$wang.id -> wang4$id
+wang4$wang.id <- c()
+
+merge(wang6, wang4, by="id")->wang7
+wang2$wang.id[tf=TRUE,]
+wang2$wang.scale[,tf]
+wang2[wang2[,2] == ,tf]
+wang7$wang.scale->wang7$scale
+wang7$wang.scale <- c()
+```
+
+
+
+```{r}
+wang6$id %in% wang2$wang.id
+```
+
+```{r}
+filter(wang2,wang.id == wang6$id)
+
+
+if (wang6$id[i] %in% wang2$wang.id=TRUE){
+  wang6$scale[i]<- wang2$wang.scale
+}
+```
+

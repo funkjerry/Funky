@@ -7,8 +7,8 @@ output:
 ---
 
 ```{r}
-load("psfddata2.Rda")
-load("psfdPlot2.Rda")
+load("psfddata3.Rda")
+load("psfdPlot3.Rda")
 ```
 
 Column
@@ -17,7 +17,7 @@ Column
 ### eco
     
 ```{r}
-graph2$eco_satis2
+graph3$eco_satis2
 ```
 
 Column
@@ -26,5 +26,5 @@ Column
 ### work
 
 ```{r}
-graph2$work_satis2
+graph3$work_satis2
 ```
