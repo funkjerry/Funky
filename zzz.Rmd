@@ -9,11 +9,12 @@ output: html_document
 library(foreign)
 library(ggplot2)
 library(dplyr)
+library(rio)
 ```
 
 
 ```{r}
-wang5 <- import("D:/satis/R2020.sav")
+wang2 <- import("C:/Users/steve/Downloads/RIRR.sav")
 ```
 
 ```{r}
