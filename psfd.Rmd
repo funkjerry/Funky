@@ -12,7 +12,20 @@ library(extrafont)
 library(colorspace) 
 library(ggpubr)
 loadfonts("win")
-wang <- read.spss("C:/Users/steve/Downloads/satis/RIRR_1.sav", to.data.frame = TRUE)
+library("rio")
+library('dplyr')
+library("tidyverse")
+
+```{r}
+import("D:/satis/RIRRR.sav")->Kuo
+Kuo %>%
+  group_by(id) %>%
+  fill(scale, .direction = "downup") %>%
+  ungroup()->wang
+wang %>%
+  group_by(id) %>%
+  mutate(birth_y2 = first(na.omit(birth_y)))->wang
+```
 
 ### happy life
 wang %>%

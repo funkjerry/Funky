@@ -1,0 +1,261 @@
+---
+title: "Untitled"
+author: "Wang"
+date: "2020/11/19"
+output: html_document
+---
+
+```{r}
+load("cohortmf.Rda")
+```
+
+### my_theme
+```{r}
+my_theme <-
+  theme_dark()+
+      theme(
+        text = element_text(color = "grey35"),
+        plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size=15, face = "bold"),
+        axis.title = element_text(size = 15),
+        axis.text = element_text(size = 15),
+        axis.line = element_line(size = 1.2, color = "grey35"),
+        axis.text.x=element_text(angle=45,size=12,vjust=0.5),
+        legend.box.background = element_rect(color = "grey75", size = 1),
+        legend.box.margin = margin(t = 5, r = 5, b = 5, l = 5),
+        legend.title = element_text(face = "bold", size = 12),
+        legend.text = element_text(size=12))
+```
+
+
+```{r}
+graph_male <- list()
+rainy <-c("#FF000F","#FF6B00","#FAF500","#00FF0A","#00F0FF","#0500FF","#7000FF")
+options(repr.plot.width=16, repr.plot.height=8)
+happym %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  labs(x="年齡組", y="平均分數(1~7分)", title="男性的生活快樂感",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 6)->graph_male$happy
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+lifem %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  labs(x="年齡組", y="平均分數(1~7分)", title="男性的生活過得好不好",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 6)->graph_male$life
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+healthm %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  labs(x="年齡組", y="平均分數(1~5分)", title="男性的自評健康狀態",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph_male$health
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+Shealthm %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  labs(x="年齡組", y="平均分數(1~5分)", title="男性的伴侶健康狀態",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph_male$Shealth
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+eco_satism %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="男性的經濟滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph_male$eco_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+work_satism %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="男性的工作滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph_male$work_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+family_satism %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="男性的家庭滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph_male$family_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+marry_satism %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="男性的婚姻滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 4)->graph_male$marry_satis
+```
+
+```{r}
+graph_female<-list()
+options(repr.plot.width=16, repr.plot.height=8)
+happyf %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~7分)", title="女性的生活快樂感",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 6)->graph_female$happy
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+lifef %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~7分)", title="女性的生活過得好不好",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 6)->graph_female$life
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+healthf %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~5分)", title="女性的自評健康狀態",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph_female$health
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+Shealthf %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~5分)", title="女性的伴侶健康狀態",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph_female$Shealth
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+eco_satisf %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="女性的經濟滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph_female$eco_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+work_satisf %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="女性的工作滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph_female$work_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+family_satisf %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="女性的家庭滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph_female$family_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+marry_satisf %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  theme_light()+
+  labs(x="年齡組", y="平均分數(1~4分)", title="女性的婚姻滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_color_manual(values = c(rainy))+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 4)->graph_female$marry_satis
+```
+
+### save data and graph
+```{r}
+save(
+  happyf, lifef, healthf, Shealthf, eco_satisf, work_satisf, family_satisf, marry_satisf, labelsx,
+  happym, lifem, healthm, Shealthm, eco_satism, work_satism, family_satism, marry_satism, rainy,
+  file="cohortmale.Rda")
+save(graph_male, graph_female, file="plotmale_cohort.Rda")
+```

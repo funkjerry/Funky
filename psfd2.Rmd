@@ -11,28 +11,31 @@ library(extrafont)
 library(dplyr)
 loadfonts("win")
 
-wang <- read.spss("D:/satis/RIRR_1.sav", to.data.frame = TRUE)
-
-=======
-wang <- read.spss("C:/Users/steve/Downloads/satis/RIRR_1.sav", to.data.frame = TRUE)
+wang <- read.spss("D:/satis/RIRR.sav", to.data.frame = TRUE)
 
 ###summary(wang$birth_y)
-wang$birth<-as.numeric(
-  levels(wang$birth_y)[wang$birth_y])
+###wang$birth<-as.numeric(levels(wang$birth_y[wang$birth_y]))
+
+
+```{r}
+sum((c(is.na(wang$happy))))
+sum((c(is.na(wang$birth_y & wang$happy))))
+```
+
 ###summary(wang$birth)
 for(i in 1:nrow(wang)){
-  if(wang$birth[i] %in% 23:28){
+  if(wang$birth_y[i] %in% 23:28){
     wang$birth_p[i]<-"1"
-  }else if (wang$birth[i] %in% 29:38){wang$birth_p[i]<-"2"
-  }else if (wang$birth[i] %in% 39:48){wang$birth_p[i]<-"3"
-  }else if (wang$birth[i] %in% 49:58){wang$birth_p[i]<-"4"
-  }else if (wang$birth[i] %in% 59:68){wang$birth_p[i]<-"5"
-  }else if (wang$birth[i] %in% 69:78){wang$birth_p[i]<-"6"
-  }else if (wang$birth[i] %in% 79:88){wang$birth_p[i]<-"7"
+  }else if (wang$birth_y[i] %in% 29:38){wang$birth_p[i]<-"2"
+  }else if (wang$birth_y[i] %in% 39:48){wang$birth_p[i]<-"3"
+  }else if (wang$birth_y[i] %in% 49:58){wang$birth_p[i]<-"4"
+  }else if (wang$birth_y[i] %in% 59:68){wang$birth_p[i]<-"5"
+  }else if (wang$birth_y[i] %in% 69:78){wang$birth_p[i]<-"6"
+  }else if (wang$birth_y[i] %in% 79:88){wang$birth_p[i]<-"7"
   }else{wang$birth_p[i]<-NA
   }
 }
-###summary(wang$birth_p)    table(wang$birth_p, wang$birth)
+###summary(wang$birth_p)    table(wang$birth_p, wang$birth_y)
 
 labelsx2 <- c("1934-39","1940-49","1950-59","1960-69","1970-79","1980-89","1990-91")
 ### happy life
@@ -111,8 +114,7 @@ mytheme<-theme_light()+
     legend.text=element_text(size=12,family="Arial Black"),
     legend.title=element_text(size=12,family="Arial Black"),
     legend.position = "top",
-    legend.background = element_rect(fill="lightblue", 
-                                  size=0.5, linetype="solid"))
+    legend.background = element_rect(fill="lightblue", size=0.5, linetype="solid"))
 
 graph<-list()
 ### graph$happylife_10

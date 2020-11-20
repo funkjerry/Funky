@@ -1,0 +1,277 @@
+---
+title: "Naniar"
+author: "Wang"
+date: "2020/11/12"
+output: html_document
+---
+```{r}
+library(ggplot2) # plot library
+library(tidyverse) # for data manipulation
+library(gridExtra) # multiple plots in 1
+library(magick) # attach dope image for visual
+library(scales) # show the colors
+library(ggrepel) # for graph repel (labels)
+library(hexbin) # for hive scatter
+library(naniar) # to check for missing data
+library(shinyjs)
+library(colorspace)
+```
+
+```{r}
+load("cohort2.rda")
+load("cohort.rda")
+```
+
+```{r}
+# Save the default personal theme
+my_theme <- theme_dark()+
+      theme(
+        text = element_text(color = "grey35"),
+        plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size=15, face = "bold"),
+        axis.title = element_text(size = 15),
+        axis.text = element_text(size = 15),
+        axis.line = element_line(size = 1.2, color = "grey35"),
+        axis.text.x=element_text(angle=45,size=12,vjust=0.5),
+        legend.box.background = element_rect(color = "grey75", size = 1),
+        legend.box.margin = margin(t = 5, r = 5, b = 5, l = 5),
+        legend.title = element_text(face = "bold", size = 12),
+        legend.text = element_text(size=12))
+```
+
+```{r}
+# Predefined personal color schemes (change them at your convenience)
+colorsReBu <- c("#922B21", "#EE865D", "#DDCD5E", "#59BEC4", "#048B9F", "#114676")
+colorsPuYe <- c("#5C374C", "#985277", "#CE6A85", "#FFCF6A", "#FFB742", "#E9692C")
+colorsEarth <- c("#DA4511", "#FFBD00", "#6A953F", "#9A6233", "#D3AE7C", "#307CA1")
+colorsRainbow <- c("#FF8EC8", "#FFDF51", "#46DBDF", "#FF8F46", "#42BAB7", "#DB0000")
+colorsPastels <- c("#FA6E4F", "#F2CF59", "#FB8E7E", "#C5D7C0", "#8EC9BB", "#F8CA9D")
+
+show_col(colorsReBu, labels = F, borders = NA)
+show_col(colorsPuYe, labels = F, borders = NA)
+show_col(colorsEarth, labels = F, borders = NA)
+show_col(colorsRainbow, labels = F, borders = NA)
+show_col(colorsPastels, labels = F, borders = NA)
+
+choose_palette(gui="shiny")
+```
+
+```{r}
+graph8 <- list()
+rainy <-c("#FF000F","#FF6B00","#FAF500","#00FF0A","#00F0FF","#0500FF","#7000FF")
+options(repr.plot.width=16, repr.plot.height=8)
+happy2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~7分)", title="主樣本的生活快樂感",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 5.5)->graph8$happy
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+life2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~7分)", title="主樣本的生活過得好不好",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 5.5)->graph8$life
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+health2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~5分)", title="主樣本的自評健康狀態",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph8$health
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+Shealth2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~5分)", title="主樣本的伴侶健康狀態",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph8$Shealth
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+eco_satis2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的經濟滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph8$eco_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+work_satis2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的工作滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph8$work_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+family_satis2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的家庭滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph8$family_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+marry_satis2 %>%
+  ggplot(aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的婚姻滿意度",color="Generation",shape="Legendary",subtitle="Group mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph8$marry_satis
+```
+
+```{r}
+graph7<-list()
+options(repr.plot.width=16, repr.plot.height=8)
+happy %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~7分)", title="主樣本的生活快樂感",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 5.5)->graph7$happy
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+life %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~7分)", title="主樣本的生活過得好不好",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(4, 5.5)->graph7$life
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+health %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~5分)", title="主樣本的自評健康狀態",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph7$health
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+Shealth %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~5分)", title="主樣本的伴侶健康狀態",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2.5, 4.5)->graph7$Shealth
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+eco_satis %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的經濟滿意度",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph7$eco_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+work_satis %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的工作滿意度",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph7$work_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+family_satis %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的家庭滿意度",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph7$family_satis
+```
+
+```{r}
+options(repr.plot.width=16, repr.plot.height=8)
+marry_satis %>%
+  ggplot(aes(x=birth_g, y=point, group=birth_p, color=birth_p)) +
+  geom_point(shape=16,stroke=1.3,size=2,alpha=0.8)+
+  geom_line(size=1.5,alpha=0.5)+
+  scale_color_manual(values = c(rainy))+
+  labs(x="年齡組", y="平均分數(1~4分)", title="主樣本的婚姻滿意度",color="Generation",shape="Legendary",subtitle="Grand mean")+
+  my_theme+
+  scale_x_discrete(labels = labelsx)+
+  ylim(2, 3.5)->graph7$marry_satis
+```
+
+### save data and graph
+```{r}
+save(
+  happy, life, health, Shealth, eco_satis, work_satis, family_satis, marry_satis, labelsx,
+  happy2, life2, health2, Shealth2, eco_satis2, work_satis2, family_satis2, marry_satis2, rainy,
+  file="cohort3.Rda")
+save(graph7, graph8, file="plot3_cohort.Rda")
+```

@@ -1,0 +1,109 @@
+---
+title: "家庭動態社會調查主樣本的生活滿意度分數（出生世代）"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("cohort.Rda")
+load("plot_cohort.Rda")
+```
+
+  Happy Life
+=======================================
+
+Column 
+-------------------------------------
+
+### Happy 
+    
+```{r}
+graph5$happy
+```
+
+Column
+-------------------------------------
+
+### Life
+
+```{r}
+graph5$life
+```
+
+  Health Shealth
+=======================================
+
+Column
+---------------------------------------
+
+### Health
+
+```{r}
+graph5$health
+```
+
+Column
+---------------------------------------
+
+### Shealth
+
+```{r}
+graph5$Shealth
+```
+
+  Eco Work Satisfaction
+=======================================
+
+Column
+----------------------------------------
+
+### Eco_satis
+
+```{r}
+graph5$eco_satis
+```
+
+Column
+----------------------------------------
+
+### Work_satis
+
+```{r}
+graph5$work_satis
+```
+
+  Family Marry Satisfaction
+========================================
+
+Column
+----------------------------------------
+
+### Family_satis
+
+```{r}
+graph5$family_satis
+```
+
+Column
+----------------------------------------
+
+### Marry_satis
+
+```{r}
+graph5$marry_satis
+```
+
+
+  Optional Life 4point
+=========================================
+Column
+----------------------------------------
+
+### life 4 point
+
+```{r}
+graph5$life4
+```
+

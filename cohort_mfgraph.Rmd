@@ -1,0 +1,178 @@
+---
+title: "家庭動態社會調查主樣本的生活滿意度分數（男女靜態）"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("cohortmale.Rda")
+load("plotmale_cohort.Rda")
+```
+
+  Happy 
+=======================================
+
+Column 
+-------------------------------------
+
+### Male Happiness Group Mean
+    
+```{r}
+graph_male$happy
+```
+
+Column
+-------------------------------------
+
+### Female Happiness Group Mean
+
+```{r}
+graph_female$happy
+```
+
+  Life
+=======================================
+
+Column
+---------------------------------------
+
+### Male Life Group Mean
+
+```{r}
+graph_male$life
+```
+
+Column
+---------------------------------------
+
+### Female Life Group Mean
+
+```{r}
+graph_female$life
+```
+
+  Health
+=======================================
+
+Column
+----------------------------------------
+
+### Male Health Group Mean
+
+```{r}
+graph_male$health
+```
+
+Column
+----------------------------------------
+
+### Female Health Group Mean
+
+```{r}
+graph_female$health
+```
+
+  Shealth
+========================================
+
+Column
+----------------------------------------
+
+### Male Shealth Group Mean
+
+```{r}
+graph_male$Shealth
+```
+
+Column
+----------------------------------------
+
+### Female Shealth Group Mean
+
+```{r}
+graph_female$Shealth
+```
+
+  Eco_satisfaction
+=========================================
+Column
+----------------------------------------
+
+### Male Eco_satis Group Mean
+
+```{r}
+graph_male$eco_satis
+```
+
+Column
+----------------------------------------
+
+### Female Eco_satis Group Mean
+
+```{r}
+graph_female$eco_satis
+```
+
+  Work_satisfaction
+===========================================
+Column
+----------------------------------------
+
+### Male Work_satis Group Mean
+
+```{r}
+graph_male$work_satis
+```
+
+Column
+----------------------------------------
+
+### Female Work_satis Group Mean
+
+```{r}
+graph_female$work_satis
+```
+
+  Family_satisfaction
+==========================================
+Column
+------------------------------------------
+
+### Male Family_satis Group Mean
+
+```{r}
+graph_male$family_satis
+```
+
+Column
+------------------------------------------
+
+### Female Family_satis Group Mean
+
+```{r}
+graph_female$family_satis
+```
+
+  Marry_satisfaction
+==========================================
+Column
+------------------------------------------
+
+### Male Marry_satis Group Mean
+
+```{r}
+graph_male$marry_satis
+```
+
+Column
+-----------------------------------------
+
+### Female Marry_satis Group Mean
+
+```{r}
+graph_female$marry_satis
+```
+
+

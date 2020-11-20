@@ -4,6 +4,8 @@ author: "Wang"
 date: "2020/10/8"
 output: html_document
 ---
+
+```{r}
 library(foreign)
 library(ggplot2)
 library(dplyr)
@@ -13,84 +15,309 @@ library(colorspace)
 library(shinyjs)
 library(plotly)
 library(stringr)
+library(rio)
 loadfonts("win")
+```
+
+
+```{r}
+import("D:/satis/RIRRR.sav")->Kuo
+Kuo %>%
+  group_by(id) %>%
+  fill(scale, .direction = "downup") %>%
+  ungroup()->wang
+wang %>%
+  group_by(id) %>%
+  mutate(birth_y2 = first(na.omit(birth_y)))->wang
+```
+
 
 ### raw data
-wang <- read.spss("D:/satis/RIRR_1.sav", to.data.frame = TRUE)
-
-mydata = wang[c("scale","period","happy","life","health","Shealth","eco_satis","work_satis","family_satis", "marry_satis")]
-
 scale <- c("1953-64主樣本","1935-54主樣本",
   "1964-76主樣本","1977-83主樣本","1984-91主樣本")
   
+mydata = wang[c("scale","period","happy","life","health","Shealth","eco_satis","work_satis","family_satis", "marry_satis")]
+
+```{r}
+mydata$scale <- factor(mydata$scale)
+levels(mydata$scale) <- scale
+levels(mydata$scale)
+mydata %>%
+  drop_na(scale)-> mydata
+```
   
 ### choose colour
 choose_palette(gui="shiny")    
 colorspace::sequential_hcl(n = 5, h = c(8, 310), c = c(80, NA, 40), l = c(40, 75), power = c(1, 1), register = "Custom-Palette")->pal
 
 ### happy clean data
+
+```{r}
 mydata %>%
+  select(scale, period, happy) %>%
   drop_na(happy) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(happy),n=n())->happy
+  summarise(point=mean(happy),n=n())->happy
 happy$point <- round(happy$point, digits=2)
+```
 
 ### life clean data
 mydata %>%
+  select(scale, period, life) %>%
   drop_na(life) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(life),n=n())->life
+  summarise(point=mean(life),n=n())->life
 life$point <- round(life$point, digits=2)
 
 ### health clean data
 mydata %>%
+  select(scale, period, health) %>%
   drop_na(health) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(health),n=n())->health
+  summarise(point=mean(health),n=n())->health
 health$point <- round(health$point, digits=2)
+
 
 ### Shealth clean data
 mydata %>%
+  select(scale, period, Shealth) %>%
   drop_na(Shealth) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(Shealth),n=n())->Shealth
+  summarise(point=mean(Shealth),n=n())->Shealth
 Shealth$point <- round(Shealth$point, digits=2)
+
 
 ### eco_satis clean data
 mydata %>%
+  select(scale, period, eco_satis) %>%
   drop_na(eco_satis) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(eco_satis),n=n())->eco_satis
+  summarise(point=mean(eco_satis),n=n())->eco_satis
 eco_satis$point <- round(eco_satis$point, digits=2)
 
 ### work_satis clean data
 mydata %>%
+  select(scale, period, work_satis) %>%
   drop_na(work_satis) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(work_satis),n=n())->work_satis
+  summarise(point=mean(work_satis),n=n())->work_satis
 work_satis$point <- round(work_satis$point, digits=2)
 
 ### family_satis clean data
 mydata %>%
+  select(scale, period, family_satis) %>%
   drop_na(family_satis) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(family_satis),n=n())->family_satis
+  summarise(point=mean(family_satis),n=n())->family_satis
 family_satis$point <- round(family_satis$point, digits=2)
 
 ### marry_satis clean data
 mydata %>%
+  select(scale, period, marry_satis) %>%
   drop_na(marry_satis) %>%
   group_by(scale, period) %>%
-  mutate(point=mean(marry_satis),n=n())->marry_satis
+  summarise(point=mean(marry_satis),n=n())->marry_satis
 marry_satis$point <- round(marry_satis$point, digits=2)
 
 graph1<-list()
-graph2<-list()
-graph3<-list()
-graph4<-list()
-
-
 ###happy graph
+      
+```{r}
+rainy <-c("#FF000F","#FF6B00","#FAF500","#00FF0A","#00F0FF","#0500FF","#7000FF")
+ggplotly(
+  ggplot(happy,aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+    ylim(4,5.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的生活快樂感",
+    x="受訪年份",y="平均分數(1 ~ 7分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$happy
+```
+
+###life graph
+```{r}
+ggplotly(
+  ggplot(life, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+    ylim(4,5.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的生活過得好不好",
+    x="受訪年份",y="平均分數(1 ~ 7分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$life
+```
+
+
+### health graph
+
+```{r}
+ggplotly(
+  ggplot(health,aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+    ylim(2.5,4.5)+
+    scale_x_continuous(breaks = seq(1999, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的健康狀態",
+    x="受訪年份",y="平均分數(1 ~ 5分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$health
+```
+
+
+### Shealth graph
+```{r}
+ggplotly(
+  ggplot(Shealth, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+    ylim(2.5,4.5)+
+    scale_x_continuous(breaks = seq(1999, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本伴侶的健康狀態",
+    x="受訪年份",y="平均分數(1 ~ 5分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$Shealth
+```
+
+
+### eco_satis graph
+```{r}
+ggplotly(
+  ggplot(eco_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2016, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的經濟滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$eco_satis
+```
+
+
+### work_satis graph
+```{r}
+ggplotly(
+  ggplot(work_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的工作滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$work_satis
+```
+
+
+### family_satis graph
+
+```{r}
+ggplotly(
+  ggplot(family_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的家庭滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$family_satis
+```
+
+
+### marry_satis graph
+```{r}
+ggplotly(
+  ggplot(marry_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=3,alpha=0.8)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    theme_light()+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的婚姻(同居)滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)"), tooltip = "text") %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph1$marry_satis
+```
+
+
+### save data and graph
+
+```{r}
+save(
+  happy,life, health, Shealth, eco_satis, work_satis, family_satis, marry_satis, rainy,
+  file="psfddata2020.Rda")
+save(graph1, file="psfdPlot2020.Rda")
+```
+
+
+### dirty things
 
 ```{r}
 
@@ -138,129 +365,3 @@ happy %>%
   "<br>Point:", ~point))
 ```
 
-
-happy %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的生活快樂感"))+
-    ylim(4,5.5)->graph1$happyp
-ggplotly(
-  graph1$happyp, tooltip = "text")->graph1$happyp2
-
-###life graph
-life %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的生活過得好不好"))+
-    ylim(4,5.5)->graph1$lifep
-ggplotly(
-  graph1$lifep, tooltip = "text")->graph1$lifep2
-
-### health graph
-health %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的自評健康狀態"))+
-    ylim(2.5,4.5)->graph2$healthp
-ggplotly(
-  graph2$healthp, tooltip = "text")->graph2$healthp2
-
-### Shealth graph
-Shealth %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的伴侶健康狀態"))+
-    ylim(2.5,4.5)->graph2$Shealthp
-ggplotly(
-  graph2$Shealthp, tooltip = "text")->graph2$Shealthp2
-  
-### eco_satis graph
-eco_satis %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的經濟滿意度"))+
-    ylim(2.5,3.5)->graph3$eco_satis
-ggplotly(
-  graph3$eco_satis, tooltip = "text")->graph3$eco_satis2
-
-### work_satis graph
-work_satis %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的工作滿意度"))+
-    ylim(2.5,3.5)->graph3$work_satis
-ggplotly(
-  graph3$work_satis, tooltip = "text")->graph3$work_satis2
- 
-### family_satis graph
-family_satis %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的家庭滿意度"))+
-    ylim(2.5,3.5)->graph4$family_satis
-ggplotly(
-  graph4$family_satis, tooltip = "text")->graph4$family_satis2
-
-### marry_satis graph
-marry_satis %>%
-  ggplot(aes(x=period, y=point, group=scale, color=scale, text = paste(
-  "Scale:", strtrim(scale,9), 
-  "<br>N:", n, 
-  "<br>Point:", point)))+
-  geom_line(linetype="solid",alpha=0.4, size=1)+
-  geom_point(size=3,alpha=0.8)+
-    ggtitle(paste("五波主樣本的婚姻(同居)滿意度"))+
-    ylim(2.5,3.5)->graph4$marry_satis
-ggplotly(
-  graph4$marry_satis, tooltip = "text")->graph4$marry_satis2
-
-
-### save data and graph
-save(
-  happy,life,
-  file="psfddata1.Rda")
-
-save(
-  health,Shealth,
-  file="psfddata2.Rda")
-  
-save(
-  eco_satis,work_satis,
-  file="psfddata3.Rda")
-  
-save(
-  family_satis,marry_satis,
-  file="psfddata4.Rda")
-
-save(graph1, file="psfdPlot1.Rda")
-save(graph2, file="psfdPlot2.Rda")
-save(graph3, file="psfdPlot3.Rda")
-save(graph4, file="psfdPlot4.Rda")

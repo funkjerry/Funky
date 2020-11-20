@@ -1,0 +1,411 @@
+---
+title: "psfd5"
+author: "Wang"
+date: "2020/11/12"
+output: html_document
+---
+
+```{r}
+library(foreign)
+library(ggplot2)
+library(dplyr)
+library(extrafont)
+library(tidyverse)
+library(colorspace) 
+library(shinyjs)
+library(plotly)
+library(stringr)
+library(rio)
+loadfonts("win")
+```
+
+```{r}
+import("D:/satis/RIRRR.sav")->Kuo
+Kuo %>%
+  group_by(id) %>%
+  fill(scale, .direction = "downup") %>%
+  ungroup()->wang
+wang %>%
+  group_by(id) %>%
+  mutate(birth_y2 = first(na.omit(birth_y)))->wang
+```
+
+
+```{r}
+labelsx=c("25-29","30-34","35-39","40-44","45-49","50-54","55-59","60-64","65-69","70-74")
+wang %>%
+  drop_na(birth_y2)->wang
+wang$age<- (wang$period-1911)-wang$birth_y2
+```
+
+###birth_group
+```{r}
+for(i in 1:nrow(wang)){
+  if(wang$age[i] %in% 25:29){
+    wang$birth_g[i]<-"1"
+  }else if (wang$age[i] %in% 30:34){wang$birth_g[i]<-"2"
+  }else if (wang$age[i] %in% 35:39){wang$birth_g[i]<-"3"
+  }else if (wang$age[i] %in% 40:44){wang$birth_g[i]<-"4"
+  }else if (wang$age[i] %in% 45:49){wang$birth_g[i]<-"5"
+  }else if (wang$age[i] %in% 50:54){wang$birth_g[i]<-"6"
+  }else if (wang$age[i] %in% 55:59){wang$birth_g[i]<-"7"
+  }else if (wang$age[i] %in% 60:64){wang$birth_g[i]<-"8"
+  }else if (wang$age[i] %in% 65:69){wang$birth_g[i]<-"9"
+  }else if (wang$age[i] %in% 70:74){wang$birth_g[i]<-"10"
+  }else{wang$birth_g[i]<-NA
+  }
+}
+wang %>%
+  drop_na(birth_g)->wang
+
+```
+###birth_period
+```{r}
+for(i in 1:nrow(wang)){
+  if(wang$birth_y2[i] %in% 23:38){
+    wang$birth_p[i]<-"1949以前"
+  }else if (wang$birth_y2[i] %in% 39:45){wang$birth_p[i]<-"1950 - 56"
+  }else if (wang$birth_y2[i] %in% 46:52){wang$birth_p[i]<-"1957 - 63"
+  }else if (wang$birth_y2[i] %in% 53:59){wang$birth_p[i]<-"1964 - 70"
+  }else if (wang$birth_y2[i] %in% 60:65){wang$birth_p[i]<-"1971 - 76"
+  }else if (wang$birth_y2[i] %in% 66:72){wang$birth_p[i]<-"1977 - 83"
+  }else if (wang$birth_y2[i] %in% 73:80){wang$birth_p[i]<-"1984以後"
+  }else{wang$birth_p[i]<-NA
+  }
+}
+```
+
+```{r}
+wang %>%
+  drop_na(happy) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(happy),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->happy2
+as.numeric(happy2$birth_g)->happy2$birth_g
+as.factor(happy2$birth_g)->happy2$birth_g
+as.factor(happy2$birth_p)->happy2$birth_p
+happy2$bpoint <- round(happy2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(life) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(life),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->life2
+as.numeric(life2$birth_g)->life2$birth_g
+as.factor(life2$birth_g)->life2$birth_g
+as.factor(life2$birth_p)->life2$birth_p
+life2$bpoint <- round(life2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(health) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(health),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->health2
+as.numeric(health2$birth_g)->health2$birth_g
+as.factor(health2$birth_g)->health2$birth_g
+as.factor(health2$birth_p)->health2$birth_p
+health2$bpoint <- round(health2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(Shealth) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(Shealth),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->Shealth2
+as.numeric(Shealth2$birth_g)->Shealth2$birth_g
+as.factor(Shealth2$birth_g)->Shealth2$birth_g
+as.factor(Shealth2$birth_p)->Shealth2$birth_p
+Shealth2$bpoint <- round(Shealth2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(eco_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(eco_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->eco_satis2
+as.numeric(eco_satis2$birth_g)->eco_satis2$birth_g
+as.factor(eco_satis2$birth_g)->eco_satis2$birth_g
+as.factor(eco_satis2$birth_p)->eco_satis2$birth_p
+eco_satis2$bpoint <- round(eco_satis2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(work_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(work_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->work_satis2
+as.numeric(work_satis2$birth_g)->work_satis2$birth_g
+as.factor(work_satis2$birth_g)->work_satis2$birth_g
+as.factor(work_satis2$birth_p)->work_satis2$birth_p
+work_satis2$bpoint <- round(work_satis2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(family_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(family_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->family_satis2
+as.numeric(family_satis2$birth_g)->family_satis2$birth_g
+as.factor(family_satis2$birth_g)->family_satis2$birth_g
+as.factor(family_satis2$birth_p)->family_satis2$birth_p
+family_satis2$bpoint <- round(family_satis2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(marry_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(marry_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->marry_satis2
+as.numeric(marry_satis2$birth_g)->marry_satis2$birth_g
+as.factor(marry_satis2$birth_g)->marry_satis2$birth_g
+as.factor(marry_satis2$birth_p)->marry_satis2$birth_p
+marry_satis2$bpoint <- round(marry_satis2$bpoint, digits = 2)
+```
+
+```{r}
+wang %>%
+  drop_na(life4) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(life4),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->life42
+as.numeric(life42$birth_g)->life42$birth_g
+as.factor(life42$birth_g)->life42$birth_g
+as.factor(life42$birth_p)->life42$birth_p
+life42$bpoint <- round(life42$bpoint, digits = 2)
+```
+
+```{r}
+graph6<-list()
+ggplotly(
+  ggplot(happy2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本的生活快樂感(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 7分)")+
+  ylim(4,5.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v")
+      )->graph6$happy
+```
+
+```{r}
+ggplotly(
+  ggplot(life2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本的生活過得好不好(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 7分)")+
+  ylim(4,5.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$life
+```
+
+### graph6$health
+```{r}
+ggplotly(
+  ggplot(health2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本的健康狀態(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 5分)")+
+  ylim(2.5,4.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$health
+```
+### graph6$Shealth
+```{r}
+ggplotly(
+  ggplot(Shealth2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本伴侶的健康狀態(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 5分)")+
+  ylim(2.5,4.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$Shealth
+```
+### graph5$eco_satis
+```{r}
+ggplotly(
+  ggplot(eco_satis2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本經濟滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$eco_satis
+```
+### graph5$work_satis
+```{r}
+ggplotly(
+  ggplot(work_satis2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本工作滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$work_satis
+```
+### graph5$family_satis
+```{r}
+ggplotly(
+  ggplot(family_satis2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本家庭滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$family_satis
+```
+### graph5$marry_satis
+```{r}
+ggplotly(
+  ggplot(marry_satis2, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本婚姻(同居)滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$marry_satis
+```
+
+### graph5$life4
+```{r}
+ggplotly(
+  ggplot(life4, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="主樣本生活過得好不好(4點量表)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+    ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph6$life4
+```
+
+### save data and graph
+```{r}
+save(
+  happy2, life2, health2, Shealth2, eco_satis2, work_satis2, family_satis2, marry_satis2, labelsx, rainy,
+  file="cohort2.Rda")
+save(graph6, file="plot2_cohort.Rda")
+```
+

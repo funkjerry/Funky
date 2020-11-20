@@ -1,0 +1,659 @@
+---
+title: "gender"
+author: "Wang"
+date: "2020/11/13"
+output: html_document
+---
+
+```{r}
+library(ggplot2) # plot library
+library(rio)
+library(plotly)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+load(file="cohortmf.Rda")
+rainy <-c("#FF000F","#FF6B00","#FAF500","#00FF0A","#00F0FF","#0500FF","#7000FF")
+import("D:/satis/RIRRR.sav")->Kuo
+Kuo %>%
+  group_by(id) %>%
+  fill(scale, .direction = "downup") %>%
+  ungroup()->wang
+```
+
+```{r}
+wang %>%
+  group_by(id) %>%
+  mutate(male2 = first(na.omit(male)),
+         birth_y2 = first(na.omit(birth_y)))->wang
+
+```
+
+```{r}
+wang %>%
+  drop_na(birth_y2)->wang
+wang$age<- (wang$period-1911)-wang$birth_y2
+```
+
+
+###birth_group
+```{r}
+for(i in 1:nrow(wang)){
+  if(wang$age[i] %in% 25:29){
+    wang$birth_g[i]<-"1"
+  }else if (wang$age[i] %in% 30:34){wang$birth_g[i]<-"2"
+  }else if (wang$age[i] %in% 35:39){wang$birth_g[i]<-"3"
+  }else if (wang$age[i] %in% 40:44){wang$birth_g[i]<-"4"
+  }else if (wang$age[i] %in% 45:49){wang$birth_g[i]<-"5"
+  }else if (wang$age[i] %in% 50:54){wang$birth_g[i]<-"6"
+  }else if (wang$age[i] %in% 55:59){wang$birth_g[i]<-"7"
+  }else if (wang$age[i] %in% 60:64){wang$birth_g[i]<-"8"
+  }else if (wang$age[i] %in% 65:69){wang$birth_g[i]<-"9"
+  }else if (wang$age[i] %in% 70:74){wang$birth_g[i]<-"10"
+  }else{wang$birth_g[i]<-NA
+  }
+}
+wang %>%
+  drop_na(birth_g)->wang
+```
+
+###birth_period
+```{r}
+for(i in 1:nrow(wang)){
+  if(wang$birth_y2[i] %in% 23:38){
+    wang$birth_p[i]<-"1949以前"
+  }else if (wang$birth_y2[i] %in% 39:45){wang$birth_p[i]<-"1950 - 56"
+  }else if (wang$birth_y2[i] %in% 46:52){wang$birth_p[i]<-"1957 - 63"
+  }else if (wang$birth_y2[i] %in% 53:59){wang$birth_p[i]<-"1964 - 70"
+  }else if (wang$birth_y2[i] %in% 60:65){wang$birth_p[i]<-"1971 - 76"
+  }else if (wang$birth_y2[i] %in% 66:72){wang$birth_p[i]<-"1977 - 83"
+  }else if (wang$birth_y2[i] %in% 73:80){wang$birth_p[i]<-"1984以後"
+  }else{wang$birth_p[i]<-NA
+  }
+}
+
+```
+
+```{r}
+
+as.factor(wang$male2) -> wang$male2
+gender<-c("男","女")
+levels(wang$male2)<-gender
+levels(wang$male2)
+wang %>%
+  filter(male2=="男")->male
+wang %>%
+  filter(male2 =="女")->female
+```
+
+```{r}
+male %>%
+  drop_na(happy) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(happy),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->happym
+
+as.factor(as.numeric(happym$birth_g))->happym$birth_g
+as.factor(happym$birth_p)->happym$birth_p
+happym$bpoint <- round(happym$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(happy) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(happy),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->happyf
+
+as.factor(as.numeric(happyf$birth_g))->happyf$birth_g
+as.factor(happyf$birth_p)->happyf$birth_p
+happyf$bpoint <- round(happyf$bpoint, digits = 2)
+```
+
+###life
+
+```{r}
+male %>%
+  drop_na(life) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(life),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->lifem
+
+as.factor(as.numeric(lifem$birth_g))->lifem$birth_g
+as.factor(lifem$birth_p)->lifem$birth_p
+lifem$bpoint <- round(lifem$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(life) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(life),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->lifef
+
+as.factor(as.numeric(lifef$birth_g))->lifef$birth_g
+as.factor(lifef$birth_p)->lifef$birth_p
+lifef$bpoint <- round(lifef$bpoint, digits = 2)
+```
+### health
+```{r}
+male %>%
+  drop_na(health) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(health),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->healthm
+
+as.factor(as.numeric(healthm$birth_g))->healthm$birth_g
+as.factor(healthm$birth_p)->healthm$birth_p
+healthm$bpoint <- round(healthm$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(health) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(health),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->healthf
+
+as.factor(as.numeric(healthf$birth_g))->healthf$birth_g
+as.factor(healthf$birth_p)->healthf$birth_p
+healthf$bpoint <- round(healthf$bpoint, digits = 2)
+```
+### Shealth
+```{r}
+male %>%
+  drop_na(Shealth) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(Shealth),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->Shealthm
+
+as.factor(as.numeric(Shealthm$birth_g))->Shealthm$birth_g
+as.factor(Shealthm$birth_p)->Shealthm$birth_p
+Shealthm$bpoint <- round(Shealthm$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(Shealth) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(Shealth),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->Shealthf
+
+as.factor(as.numeric(Shealthf$birth_g))->Shealthf$birth_g
+as.factor(Shealthf$birth_p)->Shealthf$birth_p
+Shealthf$bpoint <- round(Shealthf$bpoint, digits = 2)
+```
+### eco_satis
+```{r}
+male %>%
+  drop_na(eco_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(eco_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n())->eco_satism
+
+as.factor(as.numeric(eco_satism$birth_g))->eco_satism$birth_g
+as.factor(eco_satism$birth_p)->eco_satism$birth_p
+eco_satism$bpoint <- round(eco_satism$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(eco_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(eco_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->eco_satisf
+
+as.factor(as.numeric(eco_satisf$birth_g))->eco_satisf$birth_g
+as.factor(eco_satisf$birth_p)->eco_satisf$birth_p
+eco_satisf$bpoint <- round(eco_satisf$bpoint, digits = 2)
+```
+### work_satis
+```{r}
+male %>%
+  drop_na(work_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(work_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->work_satism
+
+as.factor(as.numeric(work_satism$birth_g))->work_satism$birth_g
+as.factor(work_satism$birth_p)->work_satism$birth_p
+work_satism$bpoint <- round(work_satism$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(work_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(work_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->work_satisf
+
+as.factor(as.numeric(work_satisf$birth_g))->work_satisf$birth_g
+as.factor(work_satisf$birth_p)->work_satisf$birth_p
+work_satisf$bpoint <- round(work_satisf$bpoint, digits = 2)
+```
+### family_satis
+```{r}
+male %>%
+  drop_na(family_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(family_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->family_satism
+
+as.factor(as.numeric(family_satism$birth_g))->family_satism$birth_g
+as.factor(family_satism$birth_p)->family_satism$birth_p
+family_satism$bpoint <- round(family_satism$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(family_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(family_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->family_satisf
+
+as.factor(as.numeric(family_satisf$birth_g))->family_satisf$birth_g
+as.factor(family_satisf$birth_p)->family_satisf$birth_p
+family_satisf$bpoint <- round(family_satisf$bpoint, digits = 2)
+```
+###marry_satis
+```{r}
+male %>%
+  drop_na(marry_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(marry_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->marry_satism
+
+as.factor(as.numeric(marry_satism$birth_g))->marry_satism$birth_g
+as.factor(marry_satism$birth_p)->marry_satism$birth_p
+marry_satism$bpoint <- round(marry_satism$bpoint, digits = 2)
+```
+
+```{r}
+female %>%
+  drop_na(marry_satis) %>%
+  group_by(birth_p, birth_g,id) %>%
+  summarise(point=mean(marry_satis),n=n()) %>%
+  ungroup() %>%
+  group_by(birth_p, birth_g) %>%
+  summarise(bpoint=mean(point), bN=n()) ->marry_satisf
+
+as.factor(as.numeric(marry_satisf$birth_g))->marry_satisf$birth_g
+as.factor(marry_satisf$birth_p)->marry_satisf$birth_p
+marry_satisf$bpoint <- round(marry_satisf$bpoint, digits = 2)
+```
+### graph9
+```{r}
+graph9<-list()
+labelsx=c("25-29","30-34","35-39","40-44","45-49","50-54","55-59","60-64","65-69","70-74")
+ggplotly(
+  ggplot(happym, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="男性的生活快樂感(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 7分)")+
+  ylim(4,6), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v")
+      )->graph9$happym
+
+ggplotly(
+  ggplot(happyf, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+  
+  labs(
+    title="女性的生活快樂感(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 7分)")+
+  ylim(4,6), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v")
+      )->graph9$happyf
+```
+### life
+```{r}
+ggplotly(
+  ggplot(lifem, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="男性的生活過得好不好(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 7分)")+
+  ylim(4,6), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$lifem
+
+ggplotly(
+  ggplot(lifef, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="女性的生活過得好不好(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 7分)")+
+  ylim(4,6), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$lifef
+```
+
+### health
+```{r}
+ggplotly(
+  ggplot(healthm, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="男性的自評健康狀態(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 5分)")+
+  ylim(2.5,4.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$healthm
+
+ggplotly(
+  ggplot(healthf, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="女性的自評健康狀態(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 5分)")+
+  ylim(2.5,4.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$healthf
+```
+### $Shealth
+```{r}
+ggplotly(
+  ggplot(Shealthm, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="男性伴侶的健康狀態(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 5分)")+
+  ylim(2.5,4.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$Shealthm
+
+ggplotly(
+  ggplot(Shealthf, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="女性伴侶的健康狀態(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 5分)")+
+  ylim(2.5,4.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$Shealthf
+```
+### eco_satis
+```{r}
+ggplotly(
+  ggplot(eco_satism, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="男性經濟滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$eco_satism
+
+ggplotly(
+  ggplot(eco_satisf, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="女性經濟滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$eco_satisf
+```
+### work_satis
+```{r}
+ggplotly(
+  ggplot(work_satism, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+  
+  labs(
+    title="男性工作滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$work_satism
+
+ggplotly(
+  ggplot(work_satisf, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="女性工作滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$work_satisf
+```
+### family_satis
+```{r}
+ggplotly(
+  ggplot(family_satism, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="男性家庭滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$family_satism
+
+ggplotly(
+  ggplot(family_satisf, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="女性家庭滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,3.5), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$family_satisf
+
+```
+### marry_satis
+```{r}
+ggplotly(
+  ggplot(marry_satism, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="男性婚姻(同居)滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,4), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$marry_satism
+
+ggplotly(
+  ggplot(marry_satisf, aes(x=birth_g, y=bpoint, group=birth_p, color=birth_p, text = paste(
+  "Period:", birth_p,
+  "<br>N:", bN, 
+  "<br>Point:", bpoint)))+
+  geom_line(linetype="solid",alpha=0.4, size=1)+
+  geom_point(size=2,alpha=0.7)+
+  scale_x_discrete(labels=labelsx)+
+  scale_color_manual(values = c(rainy))+
+  theme_dark()+
+  labs(
+    title="女性婚姻(同居)滿意度(出生世代)",
+    x="主樣本年齡",y="平均分數(1 ~ 4分)")+
+  ylim(2,4), tooltip = "text"
+  ) %>%
+    layout(legend = list(
+        orientation = "v"
+        )
+      )->graph9$marry_satisf
+```
+
+```{r}
+save(happyf, happym, lifem, lifef, healthm, healthf, Shealthf, Shealthm, eco_satisf, eco_satism, work_satism, work_satisf, family_satisf, family_satism, marry_satism, marry_satisf, labelsx, file="cohortmf.Rda")
+save(graph9, file="plotmf_cohort.Rda")
+```
+

@@ -1,0 +1,178 @@
+---
+title: "家庭動態社會調查主樣本的生活滿意度分數（出生世代）"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("cohort3.Rda")
+load("plot3_cohort.Rda")
+```
+
+  Happy 
+=======================================
+
+Column 
+-------------------------------------
+
+### Happiness Grand mean
+    
+```{r}
+graph7$happy
+```
+
+Column
+-------------------------------------
+
+### Happiness Group mean
+
+```{r}
+graph8$happy
+```
+
+  Life
+=======================================
+
+Column
+---------------------------------------
+
+### Life Grand mean
+
+```{r}
+graph7$life
+```
+
+Column
+---------------------------------------
+
+### Life Group mean
+
+```{r}
+graph8$life
+```
+
+  Health
+=======================================
+
+Column
+----------------------------------------
+
+### Health Grand mean
+
+```{r}
+graph7$health
+```
+
+Column
+----------------------------------------
+
+### Health Group mean
+
+```{r}
+graph8$health
+```
+
+  Shealth
+========================================
+
+Column
+----------------------------------------
+
+### Shealth Grand mean
+
+```{r}
+graph7$Shealth
+```
+
+Column
+----------------------------------------
+
+### Shealth Group mean
+
+```{r}
+graph8$Shealth
+```
+
+  Eco_satisfaction
+=========================================
+Column
+----------------------------------------
+
+### Eco_satis Grand mean
+
+```{r}
+graph7$eco_satis
+```
+
+Column
+----------------------------------------
+
+### Eco_satis Group mean
+
+```{r}
+graph8$eco_satis
+```
+
+  Work_satisfaction
+===========================================
+Column
+----------------------------------------
+
+### Work_satis Grand mean
+
+```{r}
+graph7$work_satis
+```
+
+Column
+----------------------------------------
+
+### Work_satis Group mean
+
+```{r}
+graph8$work_satis
+```
+
+  Family_satisfaction
+==========================================
+Column
+------------------------------------------
+
+### Family_satis Grand mean
+
+```{r}
+graph7$family_satis
+```
+
+Column
+------------------------------------------
+
+### Family_satis Group mean
+
+```{r}
+graph8$family_satis
+```
+
+  Marry_satisfaction
+==========================================
+Column
+------------------------------------------
+
+### Marry_satis Grand mean
+
+```{r}
+graph7$marry_satis
+```
+
+Column
+-----------------------------------------
+
+### Marry_satis Group mean
+
+```{r}
+graph8$marry_satis
+```
+
+

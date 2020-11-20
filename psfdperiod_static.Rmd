@@ -1,0 +1,99 @@
+---
+title: "家庭動態社會調查主樣本的生活滿意度分數（調查年度）"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+---
+
+```{r}
+load("psfddata2020static.Rda")
+load("psfdPlot2020static.Rda")
+```
+
+  Happy Life
+=======================================
+
+Column 
+-------------------------------------
+
+### Happy 
+    
+```{r}
+graph2$happy
+```
+
+Column
+-------------------------------------
+
+### Life
+
+```{r}
+graph2$life
+```
+
+  Health Shealth
+=======================================
+
+Column
+---------------------------------------
+
+### Health
+
+```{r}
+graph2$health
+```
+
+Column
+---------------------------------------
+
+### Shealth
+
+```{r}
+graph2$Shealth
+```
+
+  Eco Work Satisfaction
+=======================================
+
+Column
+----------------------------------------
+
+### Eco_satis
+
+```{r}
+graph2$eco_satis
+```
+
+Column
+----------------------------------------
+
+### Work_satis
+
+```{r}
+graph2$work_satis
+```
+
+  Family Marry Satisfaction
+========================================
+
+Column
+----------------------------------------
+
+### Family_satis
+
+```{r}
+graph2$family_satis
+```
+
+Column
+----------------------------------------
+
+### Marry_satis
+
+```{r}
+graph2$marry_satis
+```
+
+
+

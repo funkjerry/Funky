@@ -1,0 +1,148 @@
+---
+title: "period static"
+author: "Wang"
+date: "2020/11/20"
+output: html_document
+---
+
+```{r}
+load("psfddata2020.rda")
+my_theme <-
+  theme_dark()+
+      theme(
+        text = element_text(color = "grey35"),
+        plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size=15, face = "bold"),
+        axis.title = element_text(size = 15),
+        axis.text = element_text(size = 15),
+        axis.line = element_line(size = 1.2, color = "grey35"),
+        axis.text.x=element_text(angle=45,size=8,vjust=0.5),
+        legend.box.background = element_rect(color = "grey75", size = 1),
+        legend.box.margin = margin(t = 5, r = 5, b = 5, l = 5),
+        legend.title = element_text(face = "bold", size = 12),
+        legend.text = element_text(size=12))
+```
+
+```{r}
+graph2 <- list()
+ggplot(happy,aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(4,5.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的生活快樂感",
+    x="受訪年份",y="平均分數(1 ~ 7分)")+
+  my_theme->graph2$happy
+
+  ggplot(life, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(4,5.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的生活過得好不好",
+    x="受訪年份",y="平均分數(1 ~ 7分)")+
+    my_theme->graph2$life
+
+ggplot(health,aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(2.5,4.5)+
+    scale_x_continuous(breaks = seq(1999, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的健康狀態",
+    x="受訪年份",y="平均分數(1 ~ 5分)")+
+      my_theme->graph2$health
+
+ggplot(Shealth,aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(2.5,4.5)+
+    scale_x_continuous(breaks = seq(1999, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本伴侶的健康狀態",
+    x="受訪年份",y="平均分數(1 ~ 5分)")+
+      my_theme->graph2$Shealth
+
+  ggplot(eco_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2016, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的經濟滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)")+
+    my_theme->graph2$eco_satis
+  
+  ggplot(work_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的工作滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)")+
+    my_theme->graph2$work_satis
+  
+  ggplot(family_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2007, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的家庭滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)")+
+    my_theme->graph2$family_satis
+  
+  ggplot(marry_satis, aes(x=period, y=point, group=scale, color=scale, text = paste(
+  "Scale:", strtrim(scale,8), 
+  "<br>N:", n, 
+  "<br>Point:", point)))+
+  geom_line(linetype="solid",alpha=0.5, size=1.5)+
+  geom_point(shape=16, stroke=1.3, size=3,alpha=0.7)+
+    ylim(2,3.5)+
+    scale_x_continuous(breaks = seq(2016, 2020, by = 1))+
+    scale_color_manual(values=c(rainy[1:5]))+
+  labs(
+    title="主樣本的婚姻(同居)滿意度",
+    x="受訪年份",y="平均分數(1 ~ 4分)")+
+    my_theme->graph2$marry_satis
+```
+
+```{r}
+save(
+  happy,life, health, Shealth, eco_satis, work_satis, family_satis, marry_satis, rainy, my_theme,
+  file="psfddata2020static.Rda")
+save(graph2, file="psfdPlot2020static.Rda")
+```
+
+
