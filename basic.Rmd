@@ -1,0 +1,357 @@
+---
+title: "husband & wife"
+author: "Wang"
+date: "2020/11/26"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(installr)
+updateR()
+library(haven)
+library(foreign)
+data <- read.dta("RET_ALL_long.dta")
+df <- read_dta(file = "RET_ALL_long.dta")
+, label = attr(RET_ALL_long.dta,"names"))
+library(expss)
+library(dplyr)
+library(tidyr)
+lapply(df, var_lab)
+lapply(df, values2labels)
+values2labels(df)
+    # OR
+    var_lab(df$var)
+str(df)
+labels(df$mar4)
+str(df$mar4)
+str(df$mar_4)
+
+  
+table(df$birth_y)
+df[df$birth_y == -999] <- NA
+df$birth_y[df$birth_y==-999] <- NA 
+table(df$birth_y)
+table(df$period)
+
+df$age<- df$period -df$birth_y
+table(df$birth_y, df$age)
+str(df$mar_4)
+df %>%
+  filter(age > 48 & age < 66) %>%
+  filter(mar_4 == 2)->marry
+str(marry$male)
+str(df$male)
+marry %>%
+  filter(male == 1) %>%
+  select(x01, period, x01b, work, Swork, workfor, Sworkfor, workhr, Sworkhr)->male
+marry %>%
+  filter(male == 1) %>%
+  select(x01, period, x01b, work, workfor, workhr)->hus1
+sum(is.na(hus1$work))
+hus1 %>%
+  group_by(x01) %>%
+  fill(work, .direction = "downup") %>% 
+  ungroup()->hus2
+
+hus2 %>% 
+  group_by(x01) %>%
+  mutate(prev=lag(work))->hus2
+table(hus2$work)
+hus2$x01[hus2$work==990]
+hus2$work[hus2$x01==1210240]
+          , 2210290, 9120290]
+for (i in 1:row(hus2)){
+  ifelse((hus2$work[i] == lead(hus2$work[i]))==1,1,0)
+}
+
+for (i in 1:row(hus1)){
+  if(hus1$work[i])
+} 
+marry %>%
+  filter(male == 0) %>%
+  select(x01, period, x01b, work, Swork, workfor, Sworkfor, workhr, Sworkhr)->female
+
+str(df$birth_y)
+table(df$mar4,df$mar_4)
+for (i in seq_along(ret.stata)) {
+  attr(ret.stata[[i]], "label") <- var.labels[i]}
+for (i in 1:length(df))
+{
+    if (class(df[[i]] == "labelled")
+        df[[i]][df[[i]] < 0] = NA
+}
+
+for (i in 1:length(df))
+{
+    if(class(df[[i]])=="haven_labelled")
+      df[[i]]<- as.factor(df[[i]])
+}
+str(df$work)
+str(df)
+levels(df$workfor)
+class(df$work)
+attr(df)
+```
+
+```{r}
+df <- read_dta(file = "RET_ALL_long.dta")
+
+table(df$birth_y)
+df$birth_y[df$birth_y==-999] <- NA 
+table(df$birth_y)
+table(df$period)
+df$age<- df$period -df$birth_y
+table(df$age)
+table(df$mar_4)
+df %>%
+  filter(age >= 49 & age <= 65) %>%
+  filter(mar_4 == 2)->marry
+str(marry$male)
+str(df$male)
+
+hus2 %>%
+  filter(x01==c(1210240, 2210290, 9120290))->husss
+marry %>%
+  filter(male == 1) %>%
+  select(x01, period, x01b, work, workfor, workhr)->hus1
+sum(is.na(hus1$work))
+
+
+hus1 %>%
+  group_by(x01) %>%
+  fill(work, .direction = "updown") %>% 
+  ungroup()->hus2
+sum(is.na(hus2$work))
+table(hus2$work)
+hus2$work[hus2$work == 990] <- 0
+
+for (i in 1:nrow(hus2)){
+  hus2 %>%
+  group_by(x01) %>%
+  mutate(retire = ifelse(hus2$work[i] == 0 & hus2$work[i-1] !=0, 1,0)) 
+}
+
+as.numeric(c(FALSE,diff(hus2$work)!=0))
+as.numeric(c(FALSE,diff(ID)!=0))
+    
+  ))
+for(i in 1:length(hus2$work)){
+  if (hus2$work[i] !=0 & hus2$work[i+1] == 0){
+    hus2$retire[i+1:length(hus2$retire)] <-0
+  }else {hus2$retire[i] <- hus2$work[i]
+  }
+}
+table(hus2$retire)
+
+length(hus2$work)
+table (hus2$count)
+hus2$work[hus2$count ==3]
+setDT(hus2)[, count := uniqueN(work) , by = .(x01)]
+setDT(df)[Eval == "A", x:= ifelse(count == 1 & med %in% c("k","h"),1,0), by=ID]
+setDT(df)[Eval == "B", y:= ifelse(count == 1 & med %in% c("k","h"),1,0), by=ID]    
+    
+  if (work[i] == 1 & work[i + 1] != 0){
+    retire[i]<- 1 
+  }else if (work[i] == 1 & work[i + 1] == 0){
+    retire[i + 1]<- 0
+  }else if (work[i] == 0){
+    retire[i]<- 0 
+  }
+}
+
+ID[1:length(ID)]
+```
+
+```{r}
+library(plyr)
+ID <- c(1,1,2,2,2,2,3,3,3,3,3,4,4,4)
+Eval <- c("A","A","B","B","A","A","A","A","B","B","A","A","A","B")
+med <- c("c","d","k","k","h","h","c","d","h","h","h","c","h","k")
+df <- data.frame(ID,Eval,med)
+df
+setDT(df)[, count := uniqueN(med) , by = .(ID,Eval)]
+setDT(df)[Eval == "A", x:= ifelse(count == 1 & med %in% c("k","h"),1,0), by=ID]
+setDT(df)[Eval == "B", y:= ifelse(count == 1 & med %in% c("k","h"),1,0), by=ID]
+df[, x := as.integer(Eval == "A" & count ==1 & med %in% c("h", "k")) , by = ID]
+df[, y := as.integer(Eval == "B" & count ==1 & med %in% c("h", "k")) , by = ID]
+df[, lapply(.SD, function(x) as.integer(any(x))) , ID, .SDcols = x:y]
+setDT(df)[,  if(any(uniqueN(med)==1 & med %in% c("h", "k"))) {
+        .(x= Eval=="A", y= Eval == "B") } else .(x=FALSE, y=FALSE),
+     by = .(ID, Eval)][, lapply(.SD, any) , by = ID, .SDcols = x:y]
+
+list(
+  list("student A", c(2,3,4,5)),
+  list("student B", NA), # 沒交作業
+  list("student C", factor(c(2,3,4,5))),
+  list("student D", factor(c(2,3,5)))
+) -> collectionHWs
+
+correctAns <- factor(c(2,3,4,5))
+
+output <- vector("integer",length(collectionHWs))
+nameVector <- vector("character", length(collectionHWs))
+for(.x in seq_along(collectionHWs)){
+  nameVector[[.x]] <- collectionHWs[[.x]][[1]]
+  studentAns <- collectionHWs[[.x]][[2]] 
+  if(is.na(studentAns)){
+    output[[.x]] <- 0
+    next
+  } 
+
+  ccc <- c("b","QQ","a","A","bb")
+# note: cat() produces no output for NULL
+for(ch in ccc)
+    cat(ch,":", switch(EXPR = ch, a = 1, b = 2:3), "\n")
+for(ch in ccc)
+    cat(ch,":", switch(EXPR = ch, a =, A = 1, b = 2:3, "Otherwise: last"),"\n")
+
+## switch(f, *) with a factor f
+ff <- gl(3,1, labels=LETTERS[3:1])
+ff[1] # C
+## so one might expect " is C" here, but
+switch(ff[1], A = "I am A", B="Bb..", C=" is C")# -> "I am A"
+## so we give a warning
+
+## Numeric EXPR does not allow a default value to be specified
+## -- it is always NULL
+for(i in c(-1:3, 9))  print(switch(i, 1, 2 , 3, 4))
+
+## visibility
+switch(1, invisible(pi), pi)
+switch(2, invisible(pi), pi)
+centre <- function(x, type) {
+  switch(type,
+         mean = mean(x),
+         median = median(x),
+         trimmed = mean(x, trim = .1))
+}
+x <- rcauchy(10)
+centre(ID, "mean")
+centre(x, "median")
+centre(x, "trimmed")
+change <- function(x){
+  if (x)
+  switch
+  # 改題部份
+  if(identical(studentAns, correctAns)){
+    output[[.x]] <- 10
+  } else if (class(studentAns)!=class(correctAns) && identical(as.character(studentAns),as.character(correctAns))) {
+    output[[.x]] <- 5
+  } else {
+    output[[.x]] <- 0
+  }
+}
+names(output) <- nameVector
+
+tf40<-seq(TRUE,3:7)
+tf40[3:7]<-FALSE
+tf40[3:7]
+tf<-c(FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE)
+
+tf_i_select <- tf[[i]]
+setDT(hus2)[, count := uniqueN(tf) , by = x01]
+TF<-function(x){
+    x[first(which(x==TRUE)):length(x)]<- TRUE
+    return(x)}
+identical(hus2$x01,hus2$x01)
+tf40[first(which(tf40==TRUE)):length(tf40)] <-TRUE
+tff(tf40)
+TF(tf40)->tf40
+tf40
+tf40<-c(rep(FALSE,4),TRUE,TRUE,rep(FALSE,2))
+tf40
+tff(tf40)
+tf40==TRUE
+tf40[which(tf40==TRUE)]
+first(which(tf40==TRUE))
+tf40[tf40==TRUE:length(tf40)]
+length(tf40)
+print(output)
+tf40
+
+  c(FALSE, diff(hus2$work)!=0)
+  if 
+as.numeric(c(FALSE,diff(hus2$work)!=0))
+  
+hus2 %>%
+  group_by(x01) %>%
+  mutate(tf=c(FALSE,diff(hus2$work)!=0)) ->hus2
+hus2 %>%
+  group_by(x01) 
+for (i in nrow(hus2)){
+  TF(tf)->TF
+}
+%>%
+  mutate(TF=TF(tf))->hus2
+TF(hus2$tf)->hus2$TF
+```
+
+```{r}
+hus2 %>%
+  group_by(hus2$x01) %>%
+  mutate(tf=c(FALSE,diff(hus2$work)!=0))->hus2
+hus2 %>% group_by(x01) %>%
+  diff(hus2$work)->dif
+split(hus2,hus2$x01)-> mylist
+mylist[[1]]$tf <- c(FALSE, diff(mylist[[1]]$work))
+
+for (i in 1:length(mylist)){
+  mylist[[i]]$tf <- c(FALSE, diff(mylist[[i]]$work))
+}
+for (i in 1:length(mylist)){
+  mylist[[i]]$retire <- TF(mylist[[i]]$tf)
+}
+
+num<- c(0,0,0,0,-1,1,2)
+num2<-c(1,0,0,7,0,-1,-1)
+TF<-function(x){
+  if(any(x>0)==TRUE){
+    x[first(which(x != 0)):length(x)]<- 1
+    return(x)}
+}
+TF(num)
+TF(num2)
+num3<-c(0,0,0,0,0,0)
+TF(num3)
+TF(mylist[[1]]$tf)->mylist[[1]]$real
+any(mylist[[5]]$tf>0)
+(mylist[[5]]$tf)>0
+which(mylist[[1]]$tf!=0)
+mylist[[1]]$tf[1:6]
+length(mylist[[1]]$df)
+which(mylist[[1]]$df!=0)
+length(unlist(mylist[[1]]$df))
+length(mylist[[1]]$tf)
+mylist[[1]]$tf !=0
+typeof(num)
+length(num)
+lengths(mylist[[1]]$df)
+as.numeric(mylist[[1]]$tf)
+TF(as.numeric(mylist[[1]]$tf))
+hus2 %>%
+  ungroup()
+tf=c(FALSE, diff(hus2$work)!=0)
+hus2$tf<-tf
+split.data.frame(hus2,.by=x01)
+split(hus2,with(hus2, x01))
+hus3 <-list()
+for (i in mylist){
+  TF(mylist[[i]]$tf)->TF
+}
+  length(mylist)
+  mylist[[1]]$tf
+  TF(tf)->mylist
+mylist[[1]]
+hus3<-rbind(mylist)
+
+for (i in nrow(hus2)){
+  if hus2$
+}
+TF<-function(x){
+    
+    x[first(which(x==TRUE)):length(x)]<- TRUE
+    return(x)}
+```
+
+
