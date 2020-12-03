@@ -1,0 +1,85 @@
+
+```{r}
+library(tidyverse)
+library(installr)
+updateR()
+library(haven)
+library(foreign)
+
+
+df <- read_dta(file = "RET_ALL_long.dta")
+table(df$birth_y)
+df$birth_y[df$birth_y==-999] <- NA 
+df$age<- df$period -df$birth_y
+df %>%
+  filter(age > 48 & age < 66) %>%
+  filter(mar_4 == 2)->marry
+marry %>%
+  filter(male == 1) %>%
+  select(x01, period, work)->hus1
+sum(is.na(hus1$work))
+table(hus1$work)
+hus1 %>%
+  filter(work == 990)->df1
+hus1$x01[hus1$work == 990]
+hus1 %>%
+  group_by(x01) %>%
+  fill(work, .direction = "updown") %>% 
+  ungroup()->hus2
+sum(is.na(hus2$work))
+table(hus2$work)
+hus2$work[hus2$work == 990] <- 0
+
+split(hus2,hus2$x01)-> mylist
+for (i in 1:length(mylist)){
+  mylist[[i]]$tf <- c(FALSE, diff(mylist[[i]]$work))
+}
+num<-c(1,2,3,3,2)
+diff(num)
+first(mylist[[1]]$tf != 0 ): length(mylist[[1]]$tf)
+length(mylist[[1]]$tf)
+mylist[[5]]$tf
+first(mylist[[5]]$tf != 0) : length(mylist[[5]]$tf)
+first(which(mylist[[5]]$tf != 0)):length(mylist[[5]]$tf)
+
+first(which((mylist[[5]]$tf !=0)==TRUE))
+mylist[[5]]$tf[first(which(mylist[[5]]$tf==0))]
+
+mylist[[5]]$tf[first(which((mylist[[5]]$tf != 0)==TRUE))]
+TF(mylist[[5]]$tf)
+mylist[[5]]$tf !=0
+
+num <-c(0,1,0,3,3,2)
+TF<-function(x){
+  if(any(x!=0)==TRUE){
+    x[first(which((x!=0)==TRUE)):length(x)]<- 1
+    return(x)}}
+
+else{
+TF <- function(x){
+  ifelse(x)
+}      
+    }
+    return(x)}
+length(mylist)
+length(hus2$x01)
+hus2$x01[2]
+for (i in length(hus2$x01)){
+  if ((hus2$x01[i] == hus2$x01[i-1])  hus2$work[i] ==0){
+    hus2$work == 2
+  }
+}
+for (i in length(mylist)){
+  TF(mylist[[i]]$tf)->mylist[[i]]$tf
+}
+for(i in 1:(length(hus2$x01))) {
+  hus2$retire[i]<- hus2$work[i]
+  if (hus2$work[i]==0 & hus2$x01[i]==hus2$x01[i+1]) {
+  hus2$retire[i+1]<-hus2$work[i]
+  }
+}
+hus2$work -> num
+num
+```
+
+

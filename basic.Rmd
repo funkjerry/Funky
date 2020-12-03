@@ -304,7 +304,9 @@ for (i in 1:length(mylist)){
 }
 
 num<- c(0,0,0,0,-1,1,2)
+TF(num)
 num2<-c(1,0,0,7,0,-1,-1)
+
 TF<-function(x){
   if(any(x>0)==TRUE){
     x[first(which(x != 0)):length(x)]<- 1
@@ -336,8 +338,54 @@ hus2$tf<-tf
 split.data.frame(hus2,.by=x01)
 split(hus2,with(hus2, x01))
 hus3 <-list()
-for (i in mylist){
-  TF(mylist[[i]]$tf)->TF
+
+
+
+
+
+
+split(hus2,hus2$x01)-> mylist
+
+any(mylist[[5]]$work==0)
+
+
+num<-c(1,1,1,1,1,1,1,0,2,3)
+num
+TF(num)
+TF<-function(x){
+  if(any(x==0)==TRUE){
+    x[first(which(x == 0)):length(x)]<- 2}
+  else{x<-x}
+    return(x)}
+
+for (i in 1:length(mylist)){
+  TF(mylist[[i]]$work)->mylist[[i]]$retire
+}
+husband<- data.frame(unlist(mylist))
+husband <- do.call(rbind.data.frame, mylist)
+husband <- data.frame(matrix(unlist(mylist), nrow=7441, byrow= x01),stringsAsFactors=FALSE)
+mylist$
+
+ifelse()
+mylist[[5]]$work
+TF(mylist[[5]]$work)->mylist[[5]]$work
+TF(mylist[[1]]$work)->mylist[[1]]$work
+mylist[[1]]$work
+mylist[[20]]$work
+TF(mylist[[20]]$work)->mylist[[20]]$work
+mylist[[20]]$work
+length(mylist)
+
+c(rep(1,20))
+row(rep(1,20))
+for (i in length(mylist)){
+  c(1,2) -> mylist[[i]]$period
+}
+
+mylist[[5]]$work
+TF(mylist[[5]]$work)
+for (i in 1:length(mylist)){
+  TF(mylist[[i]]$work)->mylist[[i]]$retire
 }
   length(mylist)
   mylist[[1]]$tf
