@@ -1,36 +1,119 @@
 
 ```{r}
-library(tidyverse)
-library(installr)
-updateR()
+library(dplyr)
 library(haven)
-library(foreign)
-
+library(plyr)
+library(tidyr)
 
 df <- read_dta(file = "RET_ALL_long.dta")
 table(df$birth_y)
+df %>%
+  group_by(x01) %>%
+  fill(birth_y, .direction = "updown") %>%
+  ungroup() ->df
+table(df$birth_y)
 df$birth_y[df$birth_y==-999] <- NA 
 df$age<- df$period -df$birth_y
+table(df$age)
 df %>%
   filter(age > 48 & age < 66) %>%
   filter(mar_4 == 2)->marry
 marry %>%
   filter(male == 1) %>%
-  select(x01, period, work)->hus1
+  select(x01, period, work, workfor, workhr)->hus1
+marry %>% 
+  filter(male == 1) %>%
+  select(x01, period, Swork, Sworkfor, Sworkhr)->wife1
+marry %>%
+  filter(male == 0) %>%
+  select(x01, period, Swork, Sworkfor, Sworkhr)->hus2
+marry %>%
+  filter(male == 0) %>%
+  select(x01, period, work, workfor, workhr)-> wife2
+sum(is.na(hus1$work))
+sum(is.na(hus2$Swork))
+
+### omitted
+hus1$work[hus1$work==990] <- NA
+table(hus1$work)
+hus2$work[hus2$work==990] <- NA
+table(hus2$Swork)
+
+
+hus1 %>%
+  filter(is.na(hus1$work)==TRUE)-> hust
+hus1 %>%
+  group_by(x01) %>%
+  fill(work, .direction = "updown") %>% 
+  ungroup()->hus1
 sum(is.na(hus1$work))
 table(hus1$work)
-hus1 %>%
-  filter(work == 990)->df1
-hus1$x01[hus1$work == 990]
-hus1 %>%
+hus2 %>%
   group_by(x01) %>%
   fill(work, .direction = "updown") %>% 
   ungroup()->hus2
 sum(is.na(hus2$work))
 table(hus2$work)
-hus2$work[hus2$work == 990] <- 0
+###
 
-split(hus2,hus2$x01)-> mylist
+hus1 %>%
+  drop_na(work)->hus1
+hus2 %>%
+  drop_na(Swork)->hus2
+wife1 %>%
+  drop_na(Swork)->wife1
+wife2 %>%
+  drop_na(work)->wife2
+sum(is.na(hus1$work))
+sum(is.na(hus2$Swork))
+sum(is.na(wife1$Swork))
+sum(is.na(wife2$work))
+### Function
+TF<-function(x){
+  if(any(x==0)==TRUE){
+    x[first(which(x == 0)):length(x)]<- 2}
+  else{x<-x}
+    return(x-1)}
+
+
+split(hus1,hus1$x01)-> mylist1
+split(hus2,hus2$x01)-> mylist2
+split(wife1, wife1$x01)-> mylist3
+split(wife2, wife2$x01)-> mylist4
+
+for (i in 1:length(mylist1)){
+  TF(mylist1[[i]]$work)->mylist1[[i]]$retire
+}
+for (i in 1:length(mylist2)){
+  TF(mylist2[[i]]$Swork)->mylist2[[i]]$retire
+}
+for (i in 1:length(mylist3)){
+  TF(mylist3[[i]]$Swork)->mylist3[[i]]$retire
+}
+for (i in 1:length(mylist4)){
+  TF(mylist4[[i]]$work)->mylist4[[i]]$retire
+}
+
+husband1 <- do.call(rbind.data.frame, mylist1)
+husband2 <- do.call(rbind.data.frame, mylist2)
+wife1 <- do.call(rbind.data.frame, mylist3)
+wife2 <- do.call(rbind.data.frame, mylist4)
+colnames(husband1) <- name
+colnames(husband2) <- name
+colnames(wife1) <- name
+colnames(wife2) <- name
+name<-c("x01","period","work","workfor","workhr","retire")
+husband <- rbind(husband1,husband2)
+wife <- rbind(wife2, wife1)
+
+table(husband$workfor)
+write_sav(husband, "husband.sav")
+write_sav(wife, "wife.sav")
+husband %>%
+  filter(workfor==c(3,4,5,6,7))
+str(husband$workfor,names)
+
+split(hus1,hus2$x01)-> mylist
 for (i in 1:length(mylist)){
   mylist[[i]]$tf <- c(FALSE, diff(mylist[[i]]$work))
 }
