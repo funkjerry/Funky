@@ -1,0 +1,35 @@
+---
+---
+
+```{r}
+10000-2477-2060-1334
+per <-c(24.77, 20.60, 13.34)
+cat <-c("假網路拍賣", "解除分期付款詐騙", "一般購物詐欺")
+as.data.frame(per, cat)-> alttt
+
+mytheme<-theme_light()+
+  theme(
+    plot.title=element_text(size=20,color="brown", family="Calibri",hjust=0.5),
+    plot.caption=element_text(size=15,family="Arial Black"),
+    axis.text=element_text(size=15,family="Arial Black"),
+    axis.title=element_text(size=18,family="serif"),
+    axis.text.x=element_text(size=12,vjust=0.5),
+    legend.text=element_text(size=12,family="Arial Black"),
+    legend.title=element_text(size=12,family="Arial Black"),
+    legend.position = "top",
+    legend.background = element_rect(fill="lightblue", size=0.5, linetype="solid"))
+
+
+alttt %>%
+  ggplot(aes(x=cat, y=per, fill= cat))+
+  geom_bar(stat="identity", width=0.5)+
+  scale_fill_manual(values=c("lightgray","#FB4122","lightgray"))+
+  labs(x=element_blank(),y="百分比", title="未滿50歲年輕人三大受詐欺類型")+
+  my_theme
+  mytheme
+geom_col(width = 0.5)
+  geom_bar(stat="identity")
+(stat="identity")+
+  mytheme
+```
+

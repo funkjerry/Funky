@@ -47,6 +47,9 @@ colorsEarth <- c("#DA4511", "#FFBD00", "#6A953F", "#9A6233", "#D3AE7C", "#307CA1
 colorsRainbow <- c("#FF8EC8", "#FFDF51", "#46DBDF", "#FF8F46", "#42BAB7", "#DB0000")
 colorsPastels <- c("#FA6E4F", "#F2CF59", "#FB8E7E", "#C5D7C0", "#8EC9BB", "#F8CA9D")
 
+show_col(rainbow(100))
+
+
 show_col(colorsReBu, labels = F, borders = NA)
 show_col(colorsPuYe, labels = F, borders = NA)
 show_col(colorsEarth, labels = F, borders = NA)
